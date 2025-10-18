@@ -1,0 +1,32 @@
+{
+    "description": "P1 egy súly-növelő debuffot játszik ki, majd a 'weight' metrikával megnyeri a kört.",
+    "overrideInitialState": {
+      "players": [
+        { "id": "player-1", "name": "Player 1", "score": 0, "hand": [{ "cardId": "ACTION_WEIGHT_PENALTY_TEMP" }, { "cardId": "CAR_ACURA_RSXTYPES_2002", "type": "car" }] },
+        { "id": "player-2", "name": "Player 2", "score": 0, "hand": [{ "cardId": "CAR_ABARTH_FIAT131_1980", "type": "car" }] }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "cardId": "ACTION_WEIGHT_PENALTY_TEMP" }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "weight" },
+        "expectedState": { "currentPlayerId": "player-2" }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "expectedState": {
+          "roundWinnerId": "player-1"
+        }
+      }
+    ]
+  }

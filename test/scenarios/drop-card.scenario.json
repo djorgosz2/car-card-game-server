@@ -1,0 +1,39 @@
+{
+    "description": "P1 a kör elején eldobat egy lapot P2-vel, ellenőrizve P2 csökkent kézméretét.",
+    "overrideInitialState": {
+      "players": [
+        {
+          "id": "player-1", "name": "Player 1", "score": 0,
+          "hand": [
+            { "cardId": "ACTION_DROP_CARD" },
+            { "cardId": "CAR_ACURA_NSXFORZAEDITION_2017", "type": "car" }
+          ]
+        },
+        {
+          "id": "player-2", "name": "Player 2", "score": 0,
+          "hand": [
+            { "cardId": "CAR_AMC_PACERX_1977", "type": "car" },
+            { "cardId": "CAR_ABARTH_500ESSEESSE_2010", "type": "car" }
+          ]
+        }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "cardId": "ACTION_DROP_CARD" },
+        "expectedState": {
+          "player-2_handSize": 1,
+          "currentPlayerPhase": "waiting_for_car_card_after_action"
+        }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "hp" }
+      }
+    ]
+  }

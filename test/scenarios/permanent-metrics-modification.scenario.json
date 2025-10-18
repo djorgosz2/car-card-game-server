@@ -1,0 +1,31 @@
+{
+    "description": "P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.",
+    "overrideInitialState": {
+      "players": [
+        { "id": "player-1", "name": "Player 1", "score": 0, "hand": [{ "cardId": "ACTION_HP_BOOST_PERM" }, { "cardId": "CAR_AMC_PACERX_1977", "type": "car" }] },
+        { "id": "player-2", "name": "Player 2", "score": 0, "hand": [{ "cardId": "CAR_ACURA_RSXTYPES_2002", "type": "car" }] }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      { "action": "playCard", "playerId": "player-1", "findCard": { "cardId": "ACTION_HP_BOOST_PERM" } },
+      { "action": "playCard", "playerId": "player-1", "findCard": { "type": "car" }, "payload": { "selectedMetric": "hp" } },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "expectedState": {
+          "roundWinnerId": "player-2",
+          "player-2_handSize": 3
+        }
+      },
+      { "action": "advanceTurn", "expectedState": { "currentPlayerId": "player-2" } },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "cardId": "CAR_AMC_PACERX_1977" },
+        "payload": { "selectedMetric": "hp" },
+        "expectedState": {}
+      }
+    ]
+  }

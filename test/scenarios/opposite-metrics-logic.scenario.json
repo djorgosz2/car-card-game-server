@@ -1,0 +1,26 @@
+{
+    "description": "Egy kör, ahol az 'accel' metrikát használják, és a kisebb értékű kártya nyer.",
+    "overrideInitialState": {
+      "players": [
+        { "id": "player-1", "name": "Player 1", "score": 0, "hand": [{ "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007", "type": "car" }] },
+        { "id": "player-2", "name": "Player 2", "score": 0, "hand": [{ "cardId": "CAR_ACURA_NSXFORZAEDITION_2017", "type": "car" }] }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "accel" }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "expectedState": {
+          "roundWinnerId": "player-2"
+        }
+      }
+    ]
+  }

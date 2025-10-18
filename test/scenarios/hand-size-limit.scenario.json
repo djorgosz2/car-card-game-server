@@ -1,0 +1,30 @@
+{
+    "description": "P1 megnyer egy kört, ami után 11 lapja lesz, és 'must_discard' fázisba kerül.",
+    "overrideInitialState": {
+      "players": [
+        { "id": "player-1", "name": "Player 1", "score": 0, "hand": [
+          { "cardId": "CAR_ACURA_NSXFORZAEDITION_2017", "type": "car" }, { "cardId": "CAR_ACURA_RSXTYPES_2002", "type": "car" },
+          { "cardId": "CAR_ALFAROMEO_4C_2014", "type": "car" }, { "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932", "type": "car" },
+          { "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007", "type": "car" }, { "cardId": "CAR_ALFAROMEO_33STRADALE_1968", "type": "car" },
+          { "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016", "type": "car" }, { "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011", "type": "car" },
+          { "cardId": "CAR_ALFAROMEO_MONTREAL_1970", "type": "car" }, { "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990", "type": "car" }
+        ]},
+        { "id": "player-2", "name": "Player 2", "score": 0, "hand": [{ "cardId": "CAR_AMC_PACERX_1977", "type": "car" }] }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      { "action": "playCard", "playerId": "player-1", "findCard": { "type": "car", "indexInHand": 0 }, "payload": { "selectedMetric": "hp" } },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "expectedState": {
+          "roundWinnerId": "player-1",
+          "player-1_handSize": 11,
+          "currentPlayerId": "player-1",
+          "currentPlayerPhase": "must_discard"
+        }
+      }
+    ]
+  }

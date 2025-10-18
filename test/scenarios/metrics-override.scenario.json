@@ -1,0 +1,36 @@
+{
+    "description": "P1 sebességre játszik, de P2 egy akciókártyával felülírja a metrikát gyorsulásra és nyer.",
+    "overrideInitialState": {
+      "players": [
+        { "id": "player-1", "name": "Player 1", "score": 0, "hand": [{ "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007", "type": "car" }] },
+        { "id": "player-2", "name": "Player 2", "score": 0, "hand": [{ "cardId": "ACTION_OVERRIDE_METRIC_CHOICE" }, { "cardId": "CAR_ACURA_NSXFORZAEDITION_2017", "type": "car" }] }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "speed" },
+        "expectedState": { "currentPlayerId": "player-2", "selectedMetricForRound": "speed" }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "cardId": "ACTION_OVERRIDE_METRIC_CHOICE" },
+        "expectedState": { "currentPlayerPhase": "waiting_for_car_card_after_action" }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "accel" },
+        "expectedState": {
+          "roundWinnerId": "player-2",
+          "selectedMetricForRound": "accel",
+          "player-2_score": 1
+        }
+      }
+    ]
+  }
