@@ -1,0 +1,28 @@
+{
+    "description": "A játék véget ér, mert P1 nem tud autós kártyát kijátszani, miután akciózott.",
+    "initialSeed": 1,
+    "overrideInitialState": {
+      "players": [
+        {
+          "id": "player-1", "name": "Player 1", "score": 0,
+          "hand": [{ "cardId": "ACTION_TIME_BOOST" }]
+        },
+        {
+          "id": "player-2", "name": "Player 2", "score": 0,
+          "hand": [{ "cardId": "CAR_ACURA_RSXTYPES_2002", "type": "car" }]
+        }
+      ],
+      "currentPlayerId": "player-1"
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "cardId": "ACTION_TIME_BOOST" },
+        "expectedState": {
+          "gameStatus": "win",
+          "winnerId": "player-2"
+        }
+      }
+    ]
+  }

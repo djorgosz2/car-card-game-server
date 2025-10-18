@@ -1,0 +1,46 @@
+{
+    "description": "Egy kör, ami döntetlennel végződik. A lapok visszakerülnek, és a kezdő játékos jön újra.",
+    "overrideInitialState": {
+      "players": [
+        {
+          "id": "player-1", "name": "Player 1", "score": 0,
+          "hand": [
+            { "cardId": "CAR_ACURA_RSXTYPES_2002", "type": "car" }
+          ]
+        },
+        {
+          "id": "player-2", "name": "Player 2", "score": 0,
+          "hand": [
+            { "cardId": "CAR_ALFAROMEO_MONTREAL_1970", "type": "car" }
+          ]
+        }
+      ],
+      "currentPlayerId": "player-1",
+      "drawPile": []
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car", "indexInHand": 0 },
+        "payload": { "selectedMetric": "hp" },
+        "expectedState": {
+          "currentPlayerId": "player-2"
+        }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car", "indexInHand": 0 },
+        "expectedState": {
+          "roundWinnerId": null,
+          "currentPlayerPhase": "round_resolved",
+          "player-1_handSize": 1,
+          "player-2_handSize": 1
+        }
+      },
+      {
+        "action": "advanceTurn"
+      }
+    ]
+  }

@@ -1,0 +1,44 @@
+{
+  "description": "Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.",
+  "initialSeed": 12345,
+  "steps": [
+    {
+      "action": "playCard",
+      "playerId": "player-1",
+      "findCard": { "cardId": "ACTION_HP_BOOST_TEMP" },
+      "expectedState": {
+        "currentPlayerId": "player-1",
+        "currentPlayerPhase": "waiting_for_car_card_after_action"
+      }
+    },
+    {
+      "action": "playCard",
+      "playerId": "player-1",
+      "findCard": { "type": "car", "indexInHand": 0 },
+      "payload": { "selectedMetric": "hp" },
+      "expectedState": {
+        "currentPlayerId": "player-2",
+        "currentPlayerPhase": "waiting_for_initial_play"
+      }
+    },
+    {
+      "action": "playCard",
+      "playerId": "player-2",
+      "findCard": { "type": "car", "indexInHand": 0 },
+      "expectedState": {
+        "roundWinnerId": "player-1",
+        "currentPlayerPhase": "round_resolved",
+        "player-1_score": 1,
+        "player-1_handSize": 7
+      }
+    },
+    {
+      "action": "advanceTurn",
+      "expectedState": {
+        "roundWinnerId": null,
+        "currentPlayerId": "player-1",
+        "currentPlayerPhase": "waiting_for_initial_play"
+      }
+    }
+  ]
+}

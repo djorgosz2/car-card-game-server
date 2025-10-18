@@ -1,0 +1,56 @@
+{
+    "description": "P1 kijátssza az Extra Kör kártyát, megnyeri a kört, és övé a következő kör is.",
+    "overrideInitialState": {
+      "players": [
+        {
+          "id": "player-1", "name": "Player 1", "score": 0,
+          "hand": [
+            { "cardId": "ACTION_EXTRA_TURN" },
+            { "cardId": "CAR_ACURA_NSXFORZAEDITION_2017", "type": "car" }
+          ]
+        },
+        {
+          "id": "player-2", "name": "Player 2", "score": 0,
+          "hand": [
+            { "cardId": "CAR_AMC_PACERX_1977", "type": "car" }
+          ]
+        }
+      ],
+      "currentPlayerId": "player-1",
+      "drawPile": []
+    },
+    "steps": [
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "cardId": "ACTION_EXTRA_TURN" },
+        "expectedState": {
+          "extraTurnPlayerId": "player-1"
+        }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-1",
+        "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "speed" },
+        "expectedState": {
+          "currentPlayerId": "player-2"
+        }
+      },
+      {
+        "action": "playCard",
+        "playerId": "player-2",
+        "findCard": { "type": "car" },
+        "expectedState": {
+          "roundWinnerId": "player-1"
+        }
+      },
+      {
+        "action": "advanceTurn",
+        "expectedState": {
+          "currentPlayerId": "player-1",
+          "extraTurnPlayerId": null
+        }
+      }
+    ]
+  }
