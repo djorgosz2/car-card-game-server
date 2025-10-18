@@ -339,14 +339,35 @@ export const loadCardDefinitions = () => {
 
     // Statikus akciókártya definíciók (ahogy eddig is voltak)
     const staticActionCards: IActionCard[] = [
-      { id: "ACTION_TIME_BOOST", name: "Időbónusz", type: "action", description: "+30 mp", actionEffect: { type: "time_mod", value: 30 }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Time+Boost' },
-      { id: "ACTION_HP_BOOST_TEMP", name: "Turbó Feltöltés", type: "action", description: "+20% HP (ideiglenes)", actionEffect: { type: "metric_mod_temp", targetMetric: "hp", value: 20, modifierType: "percentage" }, imageUrl: 'https://via.placeholder.com/300x200.png?text=HP+Boost' },
-      { id: "ACTION_WEIGHT_PENALTY_TEMP", name: "Homokzsák", type: "action", description: "+200 kg (ideiglenes)", actionEffect: { type: "metric_mod_temp", targetMetric: "weight", value: 200, modifierType: "absolute" }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Weight+Penalty' },
-      { id: "ACTION_HP_BOOST_PERM", name: "Örök Tuning", type: "action", description: "+50 HP (permanens)", actionEffect: { type: "metric_mod_perm", targetMetric: "hp", value: 50, modifierType: "absolute" }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Perm+Boost' },
-      { id: "ACTION_OVERRIDE_METRIC_CHOICE", name: "Taktikai Váltás", type: "action", description: "Válassz új metrikát!", actionEffect: { type: "override_metric", availableMetrics: { speed: 0, hp: 0, accel: 0, weight: 0, year: 0 } }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Metric+Choice' },
-      { id: "ACTION_DROP_CARD", name: "Lap Lehúzás", type: "action", description: "Ellenféltől lapot vesz el", actionEffect: { type: "drop_card" }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Drop+Card' },
-      { id: "ACTION_EXTRA_TURN", name: "Extra Kör", type: "action", description: "Még egy kör", actionEffect: { type: "extra_turn" }, imageUrl: 'https://via.placeholder.com/300x200.png?text=Extra+Turn' },
-    ];
+      // Globális hatás
+    { id: "ACTION_TIME_BOOST", name: "Időbónusz", type: "action", description: "+30 mp",
+      actionEffect: { type: "time_mod", value: 30, target: 'game' } // Célpont: a játék maga
+    },
+
+    // Saját magára ható (pozitív) hatások
+    { id: "ACTION_HP_BOOST_TEMP", name: "Turbó Feltöltés", type: "action", description: "+20% HP (ideiglenes)",
+      actionEffect: { type: "metric_mod_temp", targetMetric: "hp", value: 20, modifierType: "percentage", target: 'self' } // Célpont: saját maga
+    },
+    { id: "ACTION_HP_BOOST_PERM", name: "Örök Tuning", type: "action", description: "+50 HP (permanens)",
+      actionEffect: { type: "metric_mod_perm", targetMetric: "hp", value: 50, modifierType: "absolute", target: 'self' } // Célpont: saját maga
+    },
+    { id: "ACTION_EXTRA_TURN", name: "Extra Kör", type: "action", description: "Még egy kör",
+      actionEffect: { type: "extra_turn", target: 'self' } // Célpont: saját maga (ő kapja a kört)
+    },
+
+    // Ellenfélre ható (negatív) hatások
+    { id: "ACTION_WEIGHT_PENALTY_TEMP", name: "Homokzsák", type: "action", description: "+200 kg (ideiglenes)",
+      actionEffect: { type: "metric_mod_temp", targetMetric: "weight", value: 200, modifierType: "absolute", target: 'opponent' } // Célpont: ellenfél
+    },
+    { id: "ACTION_DROP_CARD", name: "Lap Lehúzás", type: "action", description: "Ellenféltől lapot vesz el",
+      actionEffect: { type: "drop_card", target: 'opponent' } // Célpont: ellenfél
+    },
+
+    // Speciális, helyzetfüggő hatás
+    { id: "ACTION_OVERRIDE_METRIC_CHOICE", name: "Taktikai Váltás", type: "action", description: "Válassz új metrikát!",
+      actionEffect: { type: "override_metric", availableMetrics: { speed: 0, hp: 0, accel: 0, weight: 0, year: 0 }, target: 'self' } // Célpont: saját maga (ő kapja a választás jogát)
+    },
+  ];
 
     ALL_GAME_CARD_DEFINITIONS = [...jsonCarCards, ...staticActionCards];
     console.log(`Összesen ${jsonCarCards.length} autós és ${staticActionCards.length} akciókártya definíció betöltve.`);
@@ -426,7 +447,7 @@ export const initializeGame = (playerIds: PlayerId[], playerNames: string[], ini
     };
   });
 
-  let shuffledDeck = rng.shuffle(allGameCardInstances);
+  const shuffledDeck = rng.shuffle(allGameCardInstances);
 
   const players: IPlayerState[] = playerIds.map((id, index) => ({
     id,
@@ -504,7 +525,7 @@ export const isValidPlay = (
     // Specifikus 'override_metric' validáció
     const pendingModifier = state.pendingMetricModifiers[playerId];
     if (pendingModifier && pendingModifier.effect.type === 'override_metric') {
-        if (!payload?.selectedMetric || !(payload.selectedMetric in pendingModifier.effect.availableMetrics)) {
+        if (!payload?.selectedMetric || !pendingModifier.effect.availableMetrics || !(payload.selectedMetric in pendingModifier.effect.availableMetrics)) {
             return { isValid: false, message: "Érvénytelen metrikát választottál a felülíráshoz." };
         }
     }
@@ -536,6 +557,10 @@ export const performPlay = (
   // 1. Akciókártya kijátszása
   if (isActionCardDef(cardDef)) {
     const effect = cardDef.actionEffect;
+    let targetId = playerId;
+    if (effect.target === 'opponent') {
+        targetId = opponent.id;
+    }
     newState.activeActionCardsOnBoard[playerId] = cardInstance;
 
     switch (effect.type) {
@@ -565,12 +590,14 @@ export const performPlay = (
       case 'metric_mod_temp':
       case 'metric_mod_perm':
       case 'override_metric':
-        newState.pendingMetricModifiers[playerId] = {
-          actionCardInstanceId: cardInstanceId,
+        
+        newState.pendingMetricModifiers[targetId] = {
+          sourcePlayerId: playerId,
+          actionCardInstanceId: cardInstance.instanceId,
           effect: effect,
-        };
-        newState.gameLog.push(`${player.name} előkészített egy ${effect.type} kártyát.`);
-        break;
+      };
+      newState.gameLog.push(`${player.name} előkészített egy ${effect.type} hatást ${targetId === opponent.id ? 'az ellenfélre.' : 'magára.'}`);
+      break;
     }
     newState.currentPlayerPhase = 'waiting_for_car_card_after_action';
   } 
@@ -583,7 +610,7 @@ export const performPlay = (
     // I. FÜGGŐBEN LÉVŐ AKCIÓKÁRTYA ALKALMAZÁSA
     const pendingModifier = newState.pendingMetricModifiers[playerId];
     if (pendingModifier) {
-      const actionCardInstanceOnBoard = newState.activeActionCardsOnBoard[playerId];
+      const actionCardInstanceOnBoard = newState.activeActionCardsOnBoard[pendingModifier.sourcePlayerId];
       if (!actionCardInstanceOnBoard) {
         throw new Error(`Inconsistent state: Pending modifier exists for player ${playerId}, but no action card is on the board.`);
       }
@@ -640,9 +667,10 @@ export const performPlay = (
   // Kör kiértékelése, ha mindkét játékos tett le autót
   if (newState.carCardsOnBoard[player.id] && newState.carCardsOnBoard[opponent.id]) {
     newState = resolveRound(newState); // Csak lezárja a kört, beállítja a győztest.
-    
-    // Most NEM hívjuk meg az advanceTurn-t, hanem beállítjuk az új fázist!
-    newState.currentPlayerPhase = 'round_resolved';
+    // Csak akkor állítsuk be a 'round_resolved' fázist, ha a resolveRound nem állított be egy specifikusabbat.
+    if (newState.currentPlayerPhase !== 'must_discard') {
+      newState.currentPlayerPhase = 'round_resolved';
+    }
   }
 
   // A `checkGameEndConditions` hívás maradjon itt, mert a kör lezárása is okozhatja a játék végét
@@ -737,7 +765,7 @@ export const resolveRound = (state: IGameState): IGameState => {
 };
 
 export const advanceTurn = (state: IGameState, roundWinnerId: PlayerId | null): IGameState => {
-  let newState: IGameState = JSON.parse(JSON.stringify(state));
+  const newState: IGameState = JSON.parse(JSON.stringify(state));
   
   if (newState.gameStatus !== 'playing') {
     return newState; 
@@ -774,7 +802,7 @@ export const advanceTurn = (state: IGameState, roundWinnerId: PlayerId | null): 
 
 // --- 7. Játék Vége Feltételek (Exportált funkció) ---
 export const checkGameEndConditions = (state: IGameState): IGameState => {
-    let newState: IGameState = JSON.parse(JSON.stringify(state));
+    const newState: IGameState = JSON.parse(JSON.stringify(state));
 
     // Annak a játékosnak a kártyáit ellenőrizzük, aki épp jönne.
     const currentPlayerState = getPlayerState(newState, newState.currentPlayerId);
@@ -822,7 +850,7 @@ export const checkGameEndConditions = (state: IGameState): IGameState => {
 // --- 8. Server-oldali időtúllépés kezelése (Exportált funkció) ---
 // Ezt a szerver hívja meg, ha egy játékos ideje lejárt.
 export const endGameByTimeout = (state: IGameState, timedOutPlayerId: PlayerId): IGameState => {
-    let newState: IGameState = JSON.parse(JSON.stringify(state));
+    const newState: IGameState = JSON.parse(JSON.stringify(state));
     if (newState.gameStatus !== 'playing') return newState;
 
     const opponentOfTimedOut = getOpponentPlayerState(newState, timedOutPlayerId);
@@ -843,7 +871,7 @@ export const endGameByTimeout = (state: IGameState, timedOutPlayerId: PlayerId):
 // --- Kliensnek küldendő állapot szűrése ---
 // Ezt a funkciót a szerver hívja meg, mielőtt elküldi a GameState-et a kliensnek.
 export const getClientGameState = (serverState: IGameState, requestingPlayerId: PlayerId): IGameState => {
-  let clientState: IGameState = JSON.parse(JSON.stringify(serverState));
+  const clientState: IGameState = JSON.parse(JSON.stringify(serverState));
 
   // Szűrjük az ellenfél kezét
   clientState.players.forEach(player => {
