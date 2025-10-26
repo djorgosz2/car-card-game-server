@@ -1,0 +1,4312 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Game Engine Scenarios A játék véget ér, mert P1 nem tud autós kártyát kijátszani, miután akciózott.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_TIME_BOOST",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 kijátszotta a(z) 'Időbónusz' kártyát, +30s.",
+    "Játék vége! Player 2 nyert. Ok: Player 1 kifogyott az autós kártyákból!",
+  ],
+  "gameStatus": "win",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "turnTimeLimit": null,
+  "winnerId": "player-2",
+}
+`;
+
+exports[`Game Engine Scenarios Egy kör, ahol az 'accel' metrikát használják, és a kisebb értékű kártya nyer.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-28",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Alfa Romeo 8C Competizione (2007)' kijátszásával a kör metrikáját erre állította: accel.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-28",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "accel",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy kör, ahol az 'accel' metrikát használják, és a kisebb értékű kártya nyer.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Alfa Romeo 8C Competizione (2007)' kijátszásával a kör metrikáját erre állította: accel.",
+    "--> Most Player 2 köre.",
+    "Player 2 nyerte a kört! (accel: 4.2 vs 2.7)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+          "currentMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 1,
+    },
+  ],
+  "roundWinnerId": "player-2",
+  "selectedMetricForRound": "accel",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy kör, ami döntetlennel végződik. A lapok visszakerülnek, és a kezdő játékos jön újra.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ACURA_RSXTYPES_2002",
+      "currentMetrics": {
+        "accel": 6.717,
+        "hp": 200,
+        "speed": 148.4,
+        "weight": 2820,
+        "year": 2002,
+      },
+      "instanceId": "mock-uuid-28",
+      "originalMetrics": {
+        "accel": 6.717,
+        "hp": 200,
+        "speed": 148.4,
+        "weight": 2820,
+        "year": 2002,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Acura RSX Type-S (2002)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-28",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+          "currentMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy kör, ami döntetlennel végződik. A lapok visszakerülnek, és a kezdő játékos jön újra.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Acura RSX Type-S (2002)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Döntetlen a körben! (hp: 200 vs 200). A kártyák visszakerültek a játékosokhoz.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+          "currentMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy kör, ami döntetlennel végződik. A lapok visszakerülnek, és a kezdő játékos jön újra.: Step 3: advanceTurn 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Acura RSX Type-S (2002)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Döntetlen a körben! (hp: 200 vs 200). A kártyák visszakerültek a játékosokhoz.",
+    "--> Most Player 1 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+          "currentMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_HP_BOOST_TEMP",
+      "instanceId": "mock-uuid-51",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [
+    {
+      "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+      "currentMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+      "instanceId": "mock-uuid-32",
+      "originalMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+    },
+    {
+      "cardId": "CAR_ACURA_36NSXGT3_2018",
+      "currentMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+      "instanceId": "mock-uuid-44",
+      "originalMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+      "currentMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+      "instanceId": "mock-uuid-27",
+      "originalMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+    },
+    {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-49",
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_SPIDERQUADRIFOGLIOVERDE_1986",
+      "currentMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-43",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+      "currentMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+      "instanceId": "mock-uuid-40",
+      "originalMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_4C_2014",
+      "currentMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+      "instanceId": "mock-uuid-41",
+      "originalMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+    },
+    {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-47",
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_122CLASS1BUGGY_2021",
+      "currentMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+      "instanceId": "mock-uuid-33",
+      "originalMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+      "currentMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+      "instanceId": "mock-uuid-31",
+      "originalMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+    },
+  ],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-52",
+  "gameLog": [
+    "A játék elindult! Player 1 kezd.",
+    "Player 1 előkészített egy metric_mod_temp hatást magára.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": null,
+  "pendingMetricModifiers": {
+    "player-1": {
+      "actionCardInstanceId": "mock-uuid-51",
+      "effect": {
+        "modifierType": "percentage",
+        "target": "self",
+        "targetMetric": "hp",
+        "type": "metric_mod_temp",
+        "value": 20,
+      },
+      "sourcePlayerId": "player-1",
+    },
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+          "currentMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+          "instanceId": "mock-uuid-42",
+          "originalMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-39",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "ACTION_TIME_BOOST",
+          "instanceId": "mock-uuid-48",
+        },
+        {
+          "cardId": "CAR_ACURA_15LOWESFERNANDEZARX01B_2008",
+          "currentMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+          "instanceId": "mock-uuid-45",
+          "originalMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+        {
+          "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+          "instanceId": "mock-uuid-50",
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MILANOQUADRIFOGLIOVERDE_1992",
+          "currentMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_INTEGRATYPER_2001",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+          "instanceId": "mock-uuid-46",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "rngSeed": 12345,
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "turnTimeLimit": 300,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_HP_BOOST_TEMP",
+      "instanceId": "mock-uuid-51",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+      "currentMetrics": {
+        "accel": 9,
+        "hp": 186,
+        "speed": 120.5,
+        "weight": 2185,
+        "year": 1932,
+      },
+      "instanceId": "mock-uuid-42",
+      "originalMetrics": {
+        "accel": 9,
+        "hp": 155,
+        "speed": 120.5,
+        "weight": 2185,
+        "year": 1932,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [
+    {
+      "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+      "currentMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+      "instanceId": "mock-uuid-32",
+      "originalMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+    },
+    {
+      "cardId": "CAR_ACURA_36NSXGT3_2018",
+      "currentMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+      "instanceId": "mock-uuid-44",
+      "originalMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+      "currentMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+      "instanceId": "mock-uuid-27",
+      "originalMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+    },
+    {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-49",
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_SPIDERQUADRIFOGLIOVERDE_1986",
+      "currentMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-43",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+      "currentMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+      "instanceId": "mock-uuid-40",
+      "originalMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_4C_2014",
+      "currentMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+      "instanceId": "mock-uuid-41",
+      "originalMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+    },
+    {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-47",
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_122CLASS1BUGGY_2021",
+      "currentMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+      "instanceId": "mock-uuid-33",
+      "originalMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+      "currentMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+      "instanceId": "mock-uuid-31",
+      "originalMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+    },
+  ],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-52",
+  "gameLog": [
+    "A játék elindult! Player 1 kezd.",
+    "Player 1 előkészített egy metric_mod_temp hatást magára.",
+    "A(z) 'Turbó Feltöltés' hatása érvényesült a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-42",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-39",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "ACTION_TIME_BOOST",
+          "instanceId": "mock-uuid-48",
+        },
+        {
+          "cardId": "CAR_ACURA_15LOWESFERNANDEZARX01B_2008",
+          "currentMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+          "instanceId": "mock-uuid-45",
+          "originalMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+        {
+          "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+          "instanceId": "mock-uuid-50",
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MILANOQUADRIFOGLIOVERDE_1992",
+          "currentMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_INTEGRATYPER_2001",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+          "instanceId": "mock-uuid-46",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "rngSeed": 12345,
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "turnTimeLimit": 300,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.: Step 3: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [
+    {
+      "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+      "currentMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+      "instanceId": "mock-uuid-32",
+      "originalMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+    },
+    {
+      "cardId": "CAR_ACURA_36NSXGT3_2018",
+      "currentMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+      "instanceId": "mock-uuid-44",
+      "originalMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+      "currentMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+      "instanceId": "mock-uuid-27",
+      "originalMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+    },
+    {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-49",
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_SPIDERQUADRIFOGLIOVERDE_1986",
+      "currentMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-43",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+      "currentMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+      "instanceId": "mock-uuid-40",
+      "originalMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_4C_2014",
+      "currentMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+      "instanceId": "mock-uuid-41",
+      "originalMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+    },
+    {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-47",
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_122CLASS1BUGGY_2021",
+      "currentMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+      "instanceId": "mock-uuid-33",
+      "originalMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+      "currentMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+      "instanceId": "mock-uuid-31",
+      "originalMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+    },
+  ],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-52",
+  "gameLog": [
+    "A játék elindult! Player 1 kezd.",
+    "Player 1 előkészített egy metric_mod_temp hatást magára.",
+    "A(z) 'Turbó Feltöltés' hatása érvényesült a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 1 nyerte a kört! (hp: 186 vs 120)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-37",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-39",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "ACTION_TIME_BOOST",
+          "instanceId": "mock-uuid-48",
+        },
+        {
+          "cardId": "CAR_ACURA_15LOWESFERNANDEZARX01B_2008",
+          "currentMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+          "instanceId": "mock-uuid-45",
+          "originalMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+          "currentMetrics": {
+            "accel": 9,
+            "hp": 186,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+          "instanceId": "mock-uuid-42",
+          "originalMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+        {
+          "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+          "instanceId": "mock-uuid-50",
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MILANOQUADRIFOGLIOVERDE_1992",
+          "currentMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_INTEGRATYPER_2001",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+          "instanceId": "mock-uuid-46",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "rngSeed": 12345,
+  "roundWinnerId": "player-1",
+  "selectedMetricForRound": "hp",
+  "turnTimeLimit": 300,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.: Step 4: advanceTurn 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [
+    {
+      "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+      "currentMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+      "instanceId": "mock-uuid-32",
+      "originalMetrics": {
+        "accel": 5.5,
+        "hp": 245,
+        "speed": 170.9,
+        "weight": 1543,
+        "year": 1968,
+      },
+    },
+    {
+      "cardId": "CAR_ACURA_36NSXGT3_2018",
+      "currentMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+      "instanceId": "mock-uuid-44",
+      "originalMetrics": {
+        "accel": 3.3,
+        "hp": 522,
+        "speed": 181.8,
+        "weight": 2910,
+        "year": 2018,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+      "currentMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+      "instanceId": "mock-uuid-27",
+      "originalMetrics": {
+        "accel": 6.6,
+        "hp": 231,
+        "speed": 154.4,
+        "weight": 2910,
+        "year": 2011,
+      },
+    },
+    {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-49",
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_SPIDERQUADRIFOGLIOVERDE_1986",
+      "currentMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 9.8,
+        "hp": 115,
+        "speed": 121.6,
+        "weight": 2549,
+        "year": 1986,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-43",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+      "currentMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+      "instanceId": "mock-uuid-40",
+      "originalMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_4C_2014",
+      "currentMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+      "instanceId": "mock-uuid-41",
+      "originalMetrics": {
+        "accel": 4.4,
+        "hp": 240,
+        "speed": 158.5,
+        "weight": 2077,
+        "year": 2014,
+      },
+    },
+    {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-47",
+    },
+    {
+      "cardId": "CAR_ALUMICRAFT_122CLASS1BUGGY_2021",
+      "currentMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+      "instanceId": "mock-uuid-33",
+      "originalMetrics": {
+        "accel": 2.792,
+        "hp": 495,
+        "speed": 134.6,
+        "weight": 3750,
+        "year": 2021,
+      },
+    },
+    {
+      "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+      "currentMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+      "instanceId": "mock-uuid-31",
+      "originalMetrics": {
+        "accel": 8,
+        "hp": 200,
+        "speed": 146.8,
+        "weight": 2810,
+        "year": 1970,
+      },
+    },
+  ],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-52",
+  "gameLog": [
+    "A játék elindult! Player 1 kezd.",
+    "Player 1 előkészített egy metric_mod_temp hatást magára.",
+    "A(z) 'Turbó Feltöltés' hatása érvényesült a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'Alfa Romeo 8C 2300 Spider (1932)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 1 nyerte a kört! (hp: 186 vs 120)",
+    "--> Most Player 1 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-37",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-39",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "ACTION_TIME_BOOST",
+          "instanceId": "mock-uuid-48",
+        },
+        {
+          "cardId": "CAR_ACURA_15LOWESFERNANDEZARX01B_2008",
+          "currentMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+          "instanceId": "mock-uuid-45",
+          "originalMetrics": {
+            "accel": 3.1,
+            "hp": 510,
+            "speed": 195.9,
+            "weight": 1764,
+            "year": 2008,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+          "currentMetrics": {
+            "accel": 9,
+            "hp": 186,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+          "instanceId": "mock-uuid-42",
+          "originalMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+        {
+          "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+          "instanceId": "mock-uuid-50",
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MILANOQUADRIFOGLIOVERDE_1992",
+          "currentMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 8.122,
+            "hp": 185,
+            "speed": 134.3,
+            "weight": 2866,
+            "year": 1992,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_INTEGRATYPER_2001",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+          "instanceId": "mock-uuid-46",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 195,
+            "speed": 160.3,
+            "weight": 2639,
+            "year": 2001,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "rngSeed": 12345,
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "turnTimeLimit": 300,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 a kör elején eldobat egy lapot P2-vel, ellenőrizve P2 csökkent kézméretét.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "discardPile": [
+    {
+      "cardId": "CAR_AMC_PACERX_1977",
+      "currentMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+    },
+  ],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Lap Lehúzás' kártyával eldobatta az ellenfél egy véletlenszerű lapját.",
+  ],
+  "gameStatus": "playing",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-31",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 a kör elején eldobat egy lapot P2-vel, ellenőrizve P2 csökkent kézméretét.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_DROP_CARD",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+      "currentMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+      "instanceId": "mock-uuid-29",
+      "originalMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [
+    {
+      "cardId": "CAR_AMC_PACERX_1977",
+      "currentMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+      "instanceId": "mock-uuid-30",
+      "originalMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+    },
+  ],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Lap Lehúzás' kártyával eldobatta az ellenfél egy véletlenszerű lapját.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_500ESSEESSE_2010",
+          "currentMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+          "instanceId": "mock-uuid-31",
+          "originalMetrics": {
+            "accel": 7.417,
+            "hp": 158,
+            "speed": 136.4,
+            "weight": 2050,
+            "year": 2010,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 egy súly-növelő debuffot játszik ki, majd a 'weight' metrikával megnyeri a kört.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_temp hatást az ellenfélre.",
+  ],
+  "gameStatus": "playing",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": {
+      "actionCardInstanceId": "mock-uuid-28",
+      "effect": {
+        "modifierType": "absolute",
+        "target": "opponent",
+        "targetMetric": "weight",
+        "type": "metric_mod_temp",
+        "value": 200,
+      },
+      "sourcePlayerId": "player-1",
+    },
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+          "currentMetrics": {
+            "accel": 5.079,
+            "hp": 196,
+            "speed": 121.9,
+            "weight": 2200,
+            "year": 2015,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 5.079,
+            "hp": 196,
+            "speed": 121.9,
+            "weight": 2200,
+            "year": 2015,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 egy súly-növelő debuffot játszik ki, majd a 'weight' metrikával megnyeri a kört.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_WEIGHT_PENALTY_TEMP",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+      "currentMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+      "instanceId": "mock-uuid-29",
+      "originalMetrics": {
+        "accel": 5.079,
+        "hp": 196,
+        "speed": 121.9,
+        "weight": 2200,
+        "year": 2015,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_temp hatást az ellenfélre.",
+    "Player 1 a(z) 'Alumi Craft Class 10 Race Car (2015)' kijátszásával a kör metrikáját erre állította: weight.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": {
+      "actionCardInstanceId": "mock-uuid-28",
+      "effect": {
+        "modifierType": "absolute",
+        "target": "opponent",
+        "targetMetric": "weight",
+        "type": "metric_mod_temp",
+        "value": 200,
+      },
+      "sourcePlayerId": "player-1",
+    },
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "weight",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 egy súly-növelő debuffot játszik ki, majd a 'weight' metrikával megnyeri a kört.: Step 3: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_temp hatást az ellenfélre.",
+    "Player 1 a(z) 'Alumi Craft Class 10 Race Car (2015)' kijátszásával a kör metrikáját erre állította: weight.",
+    "--> Most Player 2 köre.",
+    "A(z) 'Homokzsák' hatása érvényesült a(z) 'Abarth Fiat 131 (1980)' kártyán (weight módosítva).",
+    "Player 1 nyerte a kört! (weight: 2200 vs 2361)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ALUMICRAFT_CLASS10RACECAR_2015",
+          "currentMetrics": {
+            "accel": 5.079,
+            "hp": 196,
+            "speed": 121.9,
+            "weight": 2200,
+            "year": 2015,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 5.079,
+            "hp": 196,
+            "speed": 121.9,
+            "weight": 2200,
+            "year": 2015,
+          },
+        },
+        {
+          "cardId": "CAR_ABARTH_FIAT131_1980",
+          "currentMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2361,
+            "year": 1980,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 8.182,
+            "hp": 140,
+            "speed": 120,
+            "weight": 2161,
+            "year": 1980,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": "player-1",
+  "selectedMetricForRound": "weight",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 kijátssza az Extra Kör kártyát, megnyeri a kört, és övé a következő kör is.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": "player-1",
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 kijátszotta a(z) 'Extra Kör' kártyát.",
+  ],
+  "gameStatus": "playing",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 kijátssza az Extra Kör kártyát, megnyeri a kört, és övé a következő kör is.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_EXTRA_TURN",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+      "currentMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+      "instanceId": "mock-uuid-29",
+      "originalMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": "player-1",
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 kijátszotta a(z) 'Extra Kör' kártyát.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "speed",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 kijátssza az Extra Kör kártyát, megnyeri a kört, és övé a következő kör is.: Step 3: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": "player-1",
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 kijátszotta a(z) 'Extra Kör' kártyát.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+    "Player 1 nyerte a kört! (speed: 184.1 vs 113.6)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": "player-1",
+  "selectedMetricForRound": "speed",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 kijátssza az Extra Kör kártyát, megnyeri a kört, és övé a következő kör is.: Step 4: advanceTurn 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 kijátszotta a(z) 'Extra Kör' kártyát.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+    "Player 1 nyerte a kört! (speed: 184.1 vs 113.6)",
+    "--> Player 1 extra köre következik.",
+    "--> Most Player 1 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 megnyer egy kört, ami után 11 lapja lesz, és 'must_discard' fázisba kerül.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+      "currentMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+      "instanceId": "mock-uuid-28",
+      "originalMetrics": {
+        "accel": 2.7,
+        "hp": 577,
+        "speed": 184.1,
+        "weight": 3801,
+        "year": 2017,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-28",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_4C_2014",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 240,
+            "speed": 158.5,
+            "weight": 2077,
+            "year": 2014,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 240,
+            "speed": 158.5,
+            "weight": 2077,
+            "year": 2014,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+          "currentMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+          "instanceId": "mock-uuid-31",
+          "originalMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+          "currentMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+          "instanceId": "mock-uuid-32",
+          "originalMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+          "currentMetrics": {
+            "accel": 5.5,
+            "hp": 245,
+            "speed": 170.9,
+            "weight": 1543,
+            "year": 1968,
+          },
+          "instanceId": "mock-uuid-33",
+          "originalMetrics": {
+            "accel": 5.5,
+            "hp": 245,
+            "speed": 170.9,
+            "weight": 1543,
+            "year": 1968,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 231,
+            "speed": 154.4,
+            "weight": 2910,
+            "year": 2011,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 231,
+            "speed": 154.4,
+            "weight": 2910,
+            "year": 2011,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+          "currentMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 megnyer egy kört, ami után 11 lapja lesz, és 'must_discard' fázisba kerül.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "must_discard",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Acura NSX Forza Edition (2017)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 1 kezében túl sok lap van (11), dobnia kell egyet!",
+    "Player 1 nyerte a kört! (hp: 577 vs 120)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-38",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_4C_2014",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 240,
+            "speed": 158.5,
+            "weight": 2077,
+            "year": 2014,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 240,
+            "speed": 158.5,
+            "weight": 2077,
+            "year": 2014,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8C2300SPIDER_1932",
+          "currentMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+          "instanceId": "mock-uuid-31",
+          "originalMetrics": {
+            "accel": 9,
+            "hp": 155,
+            "speed": 120.5,
+            "weight": 2185,
+            "year": 1932,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+          "currentMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+          "instanceId": "mock-uuid-32",
+          "originalMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_33STRADALE_1968",
+          "currentMetrics": {
+            "accel": 5.5,
+            "hp": 245,
+            "speed": 170.9,
+            "weight": 1543,
+            "year": 1968,
+          },
+          "instanceId": "mock-uuid-33",
+          "originalMetrics": {
+            "accel": 5.5,
+            "hp": 245,
+            "speed": 170.9,
+            "weight": 1543,
+            "year": 1968,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIAQUADRIFOGLIOFORZAEDITION_2016",
+          "currentMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+          "instanceId": "mock-uuid-34",
+          "originalMetrics": {
+            "accel": 4.4,
+            "hp": 506,
+            "speed": 161.3,
+            "weight": 3822,
+            "year": 2016,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_GIULIETTAQUADRIFOGLIOVERDE_2011",
+          "currentMetrics": {
+            "accel": 6.6,
+            "hp": 231,
+            "speed": 154.4,
+            "weight": 2910,
+            "year": 2011,
+          },
+          "instanceId": "mock-uuid-35",
+          "originalMetrics": {
+            "accel": 6.6,
+            "hp": 231,
+            "speed": 154.4,
+            "weight": 2910,
+            "year": 2011,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_MONTREAL_1970",
+          "currentMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+          "instanceId": "mock-uuid-36",
+          "originalMetrics": {
+            "accel": 8,
+            "hp": 200,
+            "speed": 146.8,
+            "weight": 2810,
+            "year": 1970,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_SZSPRINTZAGATO_1990",
+          "currentMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+          "instanceId": "mock-uuid-37",
+          "originalMetrics": {
+            "accel": 7,
+            "hp": 207,
+            "speed": 152.6,
+            "weight": 2778,
+            "year": 1990,
+          },
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-38",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 1,
+    },
+    {
+      "hand": [],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": "player-1",
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_HP_BOOST_PERM",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_perm hatást magára.",
+  ],
+  "gameStatus": "playing",
+  "pendingMetricModifiers": {
+    "player-1": {
+      "actionCardInstanceId": "mock-uuid-28",
+      "effect": {
+        "modifierType": "absolute",
+        "target": "self",
+        "targetMetric": "hp",
+        "type": "metric_mod_perm",
+        "value": 50,
+      },
+      "sourcePlayerId": "player-1",
+    },
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-29",
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": {
+      "cardId": "ACTION_HP_BOOST_PERM",
+      "instanceId": "mock-uuid-28",
+    },
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_AMC_PACERX_1977",
+      "currentMetrics": {
+        "accel": 13.381,
+        "hp": 170,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+      "instanceId": "mock-uuid-29",
+      "isModifiedPermanently": true,
+      "originalMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_perm hatást magára.",
+    "A(z) 'Örök Tuning' hatása érvényesült a(z) 'AMC Pacer X (1977)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'AMC Pacer X (1977)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.: Step 3: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_perm hatást magára.",
+    "A(z) 'Örök Tuning' hatása érvényesült a(z) 'AMC Pacer X (1977)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'AMC Pacer X (1977)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 2 nyerte a kört! (hp: 170 vs 200)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 170,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-29",
+          "isModifiedPermanently": true,
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 1,
+    },
+  ],
+  "roundWinnerId": "player-2",
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.: Step 4: advanceTurn 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_perm hatást magára.",
+    "A(z) 'Örök Tuning' hatása érvényesült a(z) 'AMC Pacer X (1977)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'AMC Pacer X (1977)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 2 nyerte a kört! (hp: 170 vs 200)",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+        {
+          "cardId": "CAR_AMC_PACERX_1977",
+          "currentMetrics": {
+            "accel": 13.381,
+            "hp": 170,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+          "instanceId": "mock-uuid-29",
+          "isModifiedPermanently": true,
+          "originalMetrics": {
+            "accel": 13.381,
+            "hp": 120,
+            "speed": 113.6,
+            "weight": 3425,
+            "year": 1977,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 1,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": null,
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 permanensen módosít egy lapot, P2 elnyeri, majd egy új körben P2 a módosított értékkel játssza ki.: Step 5: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": {
+      "cardId": "CAR_AMC_PACERX_1977",
+      "currentMetrics": {
+        "accel": 13.381,
+        "hp": 170,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+      "instanceId": "mock-uuid-29",
+      "isModifiedPermanently": true,
+      "originalMetrics": {
+        "accel": 13.381,
+        "hp": 120,
+        "speed": 113.6,
+        "weight": 3425,
+        "year": 1977,
+      },
+    },
+  },
+  "currentPlayerId": "player-1",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 előkészített egy metric_mod_perm hatást magára.",
+    "A(z) 'Örök Tuning' hatása érvényesült a(z) 'AMC Pacer X (1977)' kártyán (hp módosítva).",
+    "Player 1 a(z) 'AMC Pacer X (1977)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 2 köre.",
+    "Player 2 nyerte a kört! (hp: 170 vs 200)",
+    "--> Most Player 2 köre.",
+    "Player 2 a(z) 'AMC Pacer X (1977)' kijátszásával a kör metrikáját erre állította: hp.",
+    "--> Most Player 1 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-29",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_RSXTYPES_2002",
+          "currentMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 6.717,
+            "hp": 200,
+            "speed": 148.4,
+            "weight": 2820,
+            "year": 2002,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 1,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "hp",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 sebességre játszik, de P2 egy akciókártyával felülírja a metrikát gyorsulásra és nyer.: Step 1: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-28",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_initial_play",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Alfa Romeo 8C Competizione (2007)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-28",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "ACTION_OVERRIDE_METRIC_CHOICE",
+          "instanceId": "mock-uuid-29",
+        },
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "speed",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 sebességre játszik, de P2 egy akciókártyával felülírja a metrikát gyorsulásra és nyer.: Step 2: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": {
+      "cardId": "ACTION_OVERRIDE_METRIC_CHOICE",
+      "instanceId": "mock-uuid-29",
+    },
+  },
+  "carCardsOnBoard": {
+    "player-1": {
+      "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+      "currentMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+      "instanceId": "mock-uuid-28",
+      "originalMetrics": {
+        "accel": 4.2,
+        "hp": 450,
+        "speed": 193.4,
+        "weight": 3495,
+        "year": 2007,
+      },
+    },
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "waiting_for_car_card_after_action",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Alfa Romeo 8C Competizione (2007)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+    "Player 2 előkészített egy override_metric hatást magára.",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-28",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": {
+      "actionCardInstanceId": "mock-uuid-29",
+      "effect": {
+        "availableMetrics": {
+          "accel": 0,
+          "hp": 0,
+          "speed": 0,
+          "weight": 0,
+          "year": 0,
+        },
+        "target": "self",
+        "type": "override_metric",
+      },
+      "sourcePlayerId": "player-2",
+    },
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 0,
+    },
+  ],
+  "roundWinnerId": null,
+  "selectedMetricForRound": "speed",
+  "winnerId": null,
+}
+`;
+
+exports[`Game Engine Scenarios P1 sebességre játszik, de P2 egy akciókártyával felülírja a metrikát gyorsulásra és nyer.: Step 3: playCard 1`] = `
+{
+  "activeActionCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "carCardsOnBoard": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "currentPlayerId": "player-2",
+  "currentPlayerPhase": "round_resolved",
+  "currentTurnStartTime": 1234567890123,
+  "discardPile": [],
+  "drawPile": [],
+  "extraTurnPlayerId": null,
+  "gameId": "mock-uuid-27",
+  "gameLog": [
+    "A teszt egyedi állapottal indult.",
+    "Player 1 a(z) 'Alfa Romeo 8C Competizione (2007)' kijátszásával a kör metrikáját erre állította: speed.",
+    "--> Most Player 2 köre.",
+    "Player 2 előkészített egy override_metric hatást magára.",
+    "Player 2 a(z) 'Taktikai Váltás' kártyával megváltoztatta a metrikát erre: accel.",
+    "Player 2 nyerte a kört! (accel: 4.2 vs 2.7)",
+  ],
+  "gameStatus": "playing",
+  "lastPlayedCardInstanceId": "mock-uuid-30",
+  "pendingMetricModifiers": {
+    "player-1": null,
+    "player-2": null,
+  },
+  "players": [
+    {
+      "hand": [],
+      "id": "player-1",
+      "name": "Player 1",
+      "score": 0,
+    },
+    {
+      "hand": [
+        {
+          "cardId": "CAR_ACURA_NSXFORZAEDITION_2017",
+          "currentMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+          "instanceId": "mock-uuid-30",
+          "originalMetrics": {
+            "accel": 2.7,
+            "hp": 577,
+            "speed": 184.1,
+            "weight": 3801,
+            "year": 2017,
+          },
+        },
+        {
+          "cardId": "CAR_ALFAROMEO_8CCOMPETIZIONE_2007",
+          "currentMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+          "instanceId": "mock-uuid-28",
+          "originalMetrics": {
+            "accel": 4.2,
+            "hp": 450,
+            "speed": 193.4,
+            "weight": 3495,
+            "year": 2007,
+          },
+        },
+      ],
+      "id": "player-2",
+      "name": "Player 2",
+      "score": 1,
+    },
+  ],
+  "roundWinnerId": "player-2",
+  "selectedMetricForRound": "accel",
+  "winnerId": null,
+}
+`;

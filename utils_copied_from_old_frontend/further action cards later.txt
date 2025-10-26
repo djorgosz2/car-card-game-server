@@ -1,0 +1,48 @@
+PRIORITY IMPLEMENTATION ORDER
+Phase 1: Core Sabotage System
+"Engine Sabotage" - HP reduction
+"Tire Puncture" - Speed reduction
+"Fuel Leak" - Acceleration reduction
+Why First: Creates immediate counterplay, easy to understand and implement
+
+Phase 2: Information & Timing
+"Crystal Ball" - See opponent's next card
+"Quick Draw" - Play two cards (with cost)
+"Last Second" - Timer extension
+Why Second: Adds strategic depth without breaking game balance
+
+Phase 3: Comeback Mechanics
+"Underdog" - Boost when behind in stats
+"Comeback Kid" - Boost when losing
+"Streak Breaker" - Break opponent momentum
+Why Third: Prevents snowballing, keeps games competitive
+
+Phase 4: Advanced Tactics
+"Card Thief" - Steal opponent card
+"Emergency Brake" - Cancel opponent action
+"Chain Lightning" - Win streak bonus
+Why Fourth: Adds complexity and advanced strategies
+⚖️ BALANCE PRINCIPLES
+Cost-Benefit Analysis
+Sabotage cards: 20-25% reduction (significant but not crippling)
+Boost cards: 25-30% increase (powerful but situational)
+Timing cards: Have costs (discard cards, limited use)
+Prediction cards: Information only (no direct power)
+Situational Power
+Cards are strongest in specific situations
+Prevents "always play" strategies
+Rewards game knowledge and timing
+Counterplay
+Every powerful effect has counterplay
+Sabotage can be countered by different metrics
+Prediction can be countered by changing strategy
+This filtered list provides exciting, balanced gameplay without breaking the core game mechanics or creating unfun experiences!
+
+turbo
+transmission
+engine
+tire
+suspension
+ecu
+aerodynamics
+

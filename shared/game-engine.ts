@@ -7,7 +7,7 @@
 import { v4 as uuidv4 } from 'uuid'; // npm install uuid, @types/uuid
 // Assuming interfaces.ts is in the same directory or accessible
 import { IGameState, IPlayerState, GameStatus, ICardDefinition, ICardInstance, ICarCard, IActionCard, MetricType, PlayerId, PlayerActionPhase, CardMetrics } from './interfaces';
-
+import CarList from '../shared/data/CarList.json';
 // --- Determinisztikus RNG ---
 class DeterministicRNG {
   private seed: number;
@@ -260,11 +260,14 @@ export function parseJsonToCarCards(jsonData: JsonCarData[]): ICarCard[] {
         return; // Skip this car if essential data is missing or invalid
       }
       
-      // Note: imageUrl and brandLogoUrl need to be actual URLs or paths accessible by the client.
-      // For a server-side engine, these are just strings. In a real application, you'd have
-      // a more robust asset management system. Here, placeholders are used.
-      const imageUrl = `https://via.placeholder.com/300x200.png?text=${encodeURIComponent(brand)}+${encodeURIComponent(model)}`;
-      const brandLogoUrl = `https://via.placeholder.com/50x50.png?text=${encodeURIComponent(brand)}`;
+      // Generate image URLs pointing to server's static files
+      // Image file naming convention: car-brand-model-year.jpg (lowercase, spaces replaced with dashes)
+      const imageSlug = `${brand}-${model}-${year}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+      const brandSlug = brand.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+      
+      const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
+      const imageUrl = `${SERVER_URL}/images/car-${imageSlug}.jpg`;
+      const brandLogoUrl = `${SERVER_URL}/images/brand-${brandSlug}.png`;
 
       cars.push({
         // Dynamic ID based on car data, made URL-friendly
@@ -296,7 +299,7 @@ export function parseJsonToCarCards(jsonData: JsonCarData[]): ICarCard[] {
 }
 
 /**
- * Reads cars from the CarList.json file and returns a limited number of cars with calculated ranks.
+ * Reads cars from the CarList.ts file and returns a limited number of cars with calculated ranks.
  * This function needs to be adapted for server-side Node.js environment.
  *
  * @param maxCars Maximum number of cars to return (default: 50)
@@ -304,7 +307,7 @@ export function parseJsonToCarCards(jsonData: JsonCarData[]): ICarCard[] {
  */
 export function readCarsFromJson(maxCars: number = 50): ICarCard[] {
   try {
-    const jsonData = require('./CarList.json'); 
+    const jsonData = CarList as JsonCarData[]; 
     
     const allCars = parseJsonToCarCards(jsonData);
     
@@ -338,34 +341,71 @@ export const loadCardDefinitions = () => {
     const jsonCarCards = readCarsFromJson(50); // Például 50 autós kártya betöltése
 
     // Statikus akciókártya definíciók (ahogy eddig is voltak)
+    const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
+    
     const staticActionCards: IActionCard[] = [
       // Globális hatás
-    { id: "ACTION_TIME_BOOST", name: "Időbónusz", type: "action", description: "+30 mp",
-      actionEffect: { type: "time_mod", value: 30, target: 'game' } // Célpont: a játék maga
+    { 
+      id: "ACTION_TIME_BOOST", 
+      name: "Időbónusz", 
+      type: "action", 
+      description: "+30 mp",
+      imageUrl: `${SERVER_URL}/images/action-time-boost.png`,
+      actionEffect: { type: "time_mod", value: 30, target: 'game' }
     },
 
     // Saját magára ható (pozitív) hatások
-    { id: "ACTION_HP_BOOST_TEMP", name: "Turbó Feltöltés", type: "action", description: "+20% HP (ideiglenes)",
-      actionEffect: { type: "metric_mod_temp", targetMetric: "hp", value: 20, modifierType: "percentage", target: 'self' } // Célpont: saját maga
+    { 
+      id: "ACTION_HP_BOOST_TEMP", 
+      name: "Turbó Feltöltés", 
+      type: "action", 
+      description: "+20% HP (ideiglenes)",
+      imageUrl: `${SERVER_URL}/images/action-hp-boost-temp.png`,
+      actionEffect: { type: "metric_mod_temp", targetMetric: "hp", value: 20, modifierType: "percentage", target: 'self' }
     },
-    { id: "ACTION_HP_BOOST_PERM", name: "Örök Tuning", type: "action", description: "+50 HP (permanens)",
-      actionEffect: { type: "metric_mod_perm", targetMetric: "hp", value: 50, modifierType: "absolute", target: 'self' } // Célpont: saját maga
+    { 
+      id: "ACTION_HP_BOOST_PERM", 
+      name: "Örök Tuning", 
+      type: "action", 
+      description: "+50 HP (permanens)",
+      imageUrl: `${SERVER_URL}/images/action-hp-boost-perm.png`,
+      actionEffect: { type: "metric_mod_perm", targetMetric: "hp", value: 50, modifierType: "absolute", target: 'self' }
     },
-    { id: "ACTION_EXTRA_TURN", name: "Extra Kör", type: "action", description: "Még egy kör",
-      actionEffect: { type: "extra_turn", target: 'self' } // Célpont: saját maga (ő kapja a kört)
+    { 
+      id: "ACTION_EXTRA_TURN", 
+      name: "Extra Kör", 
+      type: "action", 
+      description: "Még egy kör",
+      imageUrl: `${SERVER_URL}/images/action-extra-turn.png`,
+      actionEffect: { type: "extra_turn", target: 'self' }
     },
 
     // Ellenfélre ható (negatív) hatások
-    { id: "ACTION_WEIGHT_PENALTY_TEMP", name: "Homokzsák", type: "action", description: "+200 kg (ideiglenes)",
-      actionEffect: { type: "metric_mod_temp", targetMetric: "weight", value: 200, modifierType: "absolute", target: 'opponent' } // Célpont: ellenfél
+    { 
+      id: "ACTION_WEIGHT_PENALTY_TEMP", 
+      name: "Homokzsák", 
+      type: "action", 
+      description: "+200 kg (ideiglenes)",
+      imageUrl: `${SERVER_URL}/images/action-weight-penalty-temp.png`,
+      actionEffect: { type: "metric_mod_temp", targetMetric: "weight", value: 200, modifierType: "absolute", target: 'opponent' }
     },
-    { id: "ACTION_DROP_CARD", name: "Lap Lehúzás", type: "action", description: "Ellenféltől lapot vesz el",
-      actionEffect: { type: "drop_card", target: 'opponent' } // Célpont: ellenfél
+    { 
+      id: "ACTION_DROP_CARD", 
+      name: "Lap Lehúzás", 
+      type: "action", 
+      description: "Ellenféltől lapot vesz el",
+      imageUrl: `${SERVER_URL}/images/action-drop-card.png`,
+      actionEffect: { type: "drop_card", target: 'opponent' }
     },
 
     // Speciális, helyzetfüggő hatás
-    { id: "ACTION_OVERRIDE_METRIC_CHOICE", name: "Taktikai Váltás", type: "action", description: "Válassz új metrikát!",
-      actionEffect: { type: "override_metric", availableMetrics: { speed: 0, hp: 0, accel: 0, weight: 0, year: 0 }, target: 'self' } // Célpont: saját maga (ő kapja a választás jogát)
+    { 
+      id: "ACTION_OVERRIDE_METRIC_CHOICE", 
+      name: "Taktikai Váltás", 
+      type: "action", 
+      description: "Válassz új metrikát!",
+      imageUrl: `${SERVER_URL}/images/action-override-metric.png`,
+      actionEffect: { type: "override_metric", availableMetrics: { speed: 0, hp: 0, accel: 0, weight: 0, year: 0 }, target: 'self' }
     },
   ];
 
@@ -533,21 +573,33 @@ export const isValidPlay = (
     return { isValid: true };
 };
 
+// Define a type for the return value
+type PerformPlayResult =
+  | { success: true; newState: IGameState }
+  | { success: false; message: string };
+
 export const performPlay = (
   state: IGameState,
   playerId: PlayerId,
   cardInstanceId: string,
   payload: { selectedMetric?: MetricType; targetPlayerId?: PlayerId; }
-): IGameState => {
+): PerformPlayResult => {
   const validation = isValidPlay(state, playerId, cardInstanceId, payload);
   if (!validation.isValid) {
-    throw new Error(`Érvénytelen lépés: ${validation.message}`);
+    // Instead of throwing, return a failure object
+    return { success: false, message: validation.message ?? 'Érvénytelen lépés' };
   }
   
   let newState = JSON.parse(JSON.stringify(state)); // Mély másolás az immutabilitásért
   const player = getPlayerState(newState, playerId);
   const opponent = getOpponentPlayerState(newState, playerId);
   const cardIndex = player.hand.findIndex(c => c.instanceId === cardInstanceId);
+  
+  // Extra safety check (shouldn't happen if validation passes, but good practice)
+  if (cardIndex === -1) {
+      return { success: false, message: "Kártya hiba: Nem található a kezedben (belső hiba)." };
+  }
+  
   const cardInstance = player.hand[cardIndex];
   const cardDef = getCardDefinition(cardInstance.cardId)!; // Biztosan létezik, hiszen érvényesítve van
 
@@ -653,8 +705,9 @@ export const performPlay = (
     
     // II. A KÖR METRIKÁJÁNAK BEÁLLÍTÁSA (HA MÉG NINCS)
     if (newState.selectedMetricForRound === null) {
-      if (!payload.selectedMetric) { // Ezt már az isValidPlay ellenőrzi, de biztonságból itt is lehet
-        throw new Error("Autós kártya kijátszásakor kötelező metrikát választani, ha még nincs kiválasztva a körre.");
+      if (!payload.selectedMetric) {
+        // Return failure instead of throwing
+        return { success: false, message: "Metrika választás kötelező, ha még nincs kiválasztva a körre." };
       }
       newState.selectedMetricForRound = payload.selectedMetric;
       newState.gameLog.push(`${player.name} a(z) '${cardDef.name}' kijátszásával a kör metrikáját erre állította: ${payload.selectedMetric}.`);
@@ -666,7 +719,13 @@ export const performPlay = (
   // --- JAVÍTOTT RÉSZ ---
   // Kör kiértékelése, ha mindkét játékos tett le autót
   if (newState.carCardsOnBoard[player.id] && newState.carCardsOnBoard[opponent.id]) {
-    newState = resolveRound(newState); // Csak lezárja a kört, beállítja a győztest.
+    // ResolveRound might still throw internal errors, keep that possibility
+    try {
+        newState = resolveRound(newState); 
+    } catch (e: any) {
+        console.error("Internal error during resolveRound:", e);
+        return { success: false, message: "Belső hiba a kör lezárásakor." };
+    }
     // Csak akkor állítsuk be a 'round_resolved' fázist, ha a resolveRound nem állított be egy specifikusabbat.
     if (newState.currentPlayerPhase !== 'must_discard') {
       newState.currentPlayerPhase = 'round_resolved';
@@ -689,7 +748,10 @@ export const performPlay = (
     }
   }
 
-  return newState;
+  return {
+    newState: newState,
+    success: true,
+  };
 };
 
 
@@ -735,9 +797,11 @@ export const resolveRound = (state: IGameState): IGameState => {
   if (winner && loser) {
     const winnerCard = newState.carCardsOnBoard[winner.id]!;
     const loserCard = newState.carCardsOnBoard[loser.id]!;
+    const winnerMetricValue = (winnerCard.currentMetrics || getCarCardDefinition(winnerCard).metrics)[metric];
+    const loserMetricValue = (loserCard.currentMetrics || getCarCardDefinition(loserCard).metrics)[metric];
     winner.hand.push(winnerCard, loserCard);
     winner.score += 1; 
-    message = `${winner.name} nyerte a kört! (${metric}: ${player1MetricValue} vs ${player2MetricValue})`;
+    message = `${winner.name} nyerte a kört! (${metric}: ${winnerMetricValue} vs ${loserMetricValue})`;
     // ÚJ RÉSZ: Kézméret limit ellenőrzése
     if (winner.hand.length > 10) {
       newState.currentPlayerPhase = 'must_discard';
@@ -788,8 +852,6 @@ export const advanceTurn = (state: IGameState, roundWinnerId: PlayerId | null): 
     // A currentPlayerId a kör végén a második játékos, így az ellenfele volt a kezdő.
     nextPlayerId = getOpponentPlayerState(newState, newState.currentPlayerId).id;
   }
-  
-  // AZ AUTOMATIKUS HÚZÁS LOGIKÁJÁT INNEN TELJESEN ELTÁVOLÍTOTTUK.
 
   newState.currentPlayerId = nextPlayerId;
   newState.currentTurnStartTime = Date.now(); 

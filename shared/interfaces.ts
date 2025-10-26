@@ -11,7 +11,6 @@ export type PlayerActionPhase =
   | 'awaiting_opponent_play'          // Várakozás az ellenfél lépésére (technikai fázis)
   | 'round_resolved'; // A kör lezárva, de még nem következik a kör váltás
 
-
 export interface CardMetrics {
   speed: number;
   hp: number;
@@ -29,12 +28,15 @@ export type ActionEffectType =
   | 'extra_turn';          // Extra kör
 
 // Union típus az összes lehetséges akció effektushoz
-export type IActionEffect = 
-  | { type: 'time_mod'; value: number }
-  | { type: 'metric_mod_temp' | 'metric_mod_perm'; targetMetric: MetricType; value: number; modifierType: 'percentage' | 'absolute' }
-  | { type: 'override_metric'; availableMetrics: CardMetrics; newMetric?: MetricType } // A newMetric itt lehet, hogy felesleges, ha a felhasználó választ
-  | { type: 'drop_card' }
-  | { type: 'extra_turn' };
+export interface IActionEffect {
+  type: 'time_mod' | 'metric_mod_temp' | 'metric_mod_perm' | 'override_metric' | 'drop_card' | 'extra_turn';
+  target: 'self' | 'opponent' | 'game'; // A 'game' a globális hatásokra, mint az időmódosítás
+  value?: number;
+  targetMetric?: MetricType;
+  modifierType?: 'percentage' | 'absolute';
+  availableMetrics?: CardMetrics;
+  newMetric?: MetricType;
+}
 
 export interface ICardDefinition {
   id: string;             
@@ -104,6 +106,7 @@ export interface IGameState {
   currentPlayerPhase: PlayerActionPhase; 
   pendingMetricModifiers: { // Függőben lévő metrika módosítók
     [playerId: string]: { // Annak a játékosnak az ID-je, akinek a kártyájára hat majd
+      sourcePlayerId: PlayerId; // A játékos, aki kijátszotta az akciókártyát
       actionCardInstanceId: string; // Melyik akciókártya okozza
       effect: IActionEffect;       // Milyen hatás
     } | null;

@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest --updateSnapshot",
+    "test": "npm run sync-shared && jest --updateSnapshot",
+    "sync-shared": "node sync-game-engine.js",
+    "sync-game-engine": "node sync-game-engine.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:watch": "jest --watch",
-    "start": "ts-node index.ts",
-    "dev": "ts-node --watch index.ts"
+    "start": "cd src && ts-node index.ts",
+    "dev": "cd src && ts-node --watch index.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
   "dependencies": {
     "@types/express": "^5.0.3",
     "express": "^5.1.0",
+    "fast-json-patch": "^3.1.1",
     "jiti": "^2.6.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",

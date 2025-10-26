@@ -126,7 +126,14 @@ describe('Game Engine Scenarios', () => {
 
             const cardInstanceIdToPlay = findCardInstanceIdFromHand(playerState.hand, step.findCard);
 
-            newState = performPlay(gameState, step.playerId, cardInstanceIdToPlay, step.payload || {});
+            const result = performPlay(gameState, step.playerId, cardInstanceIdToPlay, step.payload || {});
+            
+            // Check if the play was successful
+            if (!result.success) {
+                throw new Error(`PerformPlay failed: ${result.message}`);
+            }
+            
+            newState = result.newState;
             break;
           }
           case 'advanceTurn': {
