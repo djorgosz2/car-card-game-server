@@ -8,6 +8,7 @@ export type PlayerActionPhase =
   | 'must_discard'                      // A játékosnak dobnia kell egy lapot
   | 'waiting_for_car_card_after_action' // A játékos akciókártyát játszott ki, és most autós kártya jön
   | 'turn_ended'                        // A játékos befejezte a lapok kijátszását a körben
+  | 'both_cards_on_board'              // Mindkét autós kártya lent van, összehasonlítás előtt
   | 'awaiting_opponent_play'          // Várakozás az ellenfél lépésére (technikai fázis)
   | 'round_resolved'; // A kör lezárva, de még nem következik a kör váltás
 

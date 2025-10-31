@@ -27,9 +27,8 @@
         "findCard": { "type": "car" },
         "payload": { "selectedMetric": "accel" },
         "expectedState": {
-          "roundWinnerId": "player-2",
-          "selectedMetricForRound": "accel",
-          "player-2_score": 1
+          "currentPlayerPhase": "both_cards_on_board",
+          "selectedMetricForRound": "accel"
         }
       }
     ]

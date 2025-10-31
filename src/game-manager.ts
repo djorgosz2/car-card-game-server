@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import * as jsonpatch from 'fast-json-patch';
-import { IGameState, PlayerId } from '../shared/interfaces';
-import { initializeGame, performPlay, getClientGameState, advanceTurn, endGameByTimeout } from '../shared/game-engine';
+import { IGameState, PlayerId, MetricType } from '../shared/interfaces';
+import { initializeGame, performPlay, getClientGameState, advanceTurn, endGameByTimeout, resolveRound, checkGameEndConditions } from '../shared/game-engine';
 import { decideMove } from './ai-manager';
 import { PlayerInLobby } from './match-making-manager';
 
@@ -94,8 +94,8 @@ export class GameManager {
 // --- Privát, belső működés ------------------------------------------------
 
     private setupSocketListeners() {
-        this.playerSockets.forEach((socket, playerId) => {
-            this.setupSocketListenersForSocket(socket, playerId);
+        this.playerSockets.forEach((socket, pid) => {
+            this.setupSocketListenersForSocket(socket, pid);
         });
     }
     
@@ -104,7 +104,7 @@ export class GameManager {
         socket.removeAllListeners('game:playCard');
         socket.removeAllListeners('game:advanceTurn');
 
-        socket.on('game:playCard', (data) => this.handlePlayerMove(playerId, data));
+        socket.on('game:playCard', (data) => this.handlePlayerMove(playerId, data as { cardInstanceId: string; payload?: Record<string, unknown> }));
         socket.on('game:advanceTurn', () => this.handleAdvanceTurn());
     }
 
@@ -127,13 +127,21 @@ export class GameManager {
         this.startTurnTimer();
     }
 
-    private handlePlayerMove(playerId: PlayerId, data: any) {
+    private handlePlayerMove(playerId: PlayerId, data: { cardInstanceId: string; payload?: Record<string, unknown> }) {
+        console.log(`[GameManager:${this.gameId}] handlePlayerMove from ${playerId} in phase=${this.gameState.currentPlayerPhase}`);
         if (this.gameState.currentPlayerId !== playerId || this.gameState.gameStatus !== 'playing') {
             return; 
         }
 
+        // Block moves during comparison phase
+        if (this.gameState.currentPlayerPhase === 'both_cards_on_board') {
+            console.warn(`[GameManager:${this.gameId}] Move rejected during both_cards_on_board phase from ${playerId}`);
+            this.playerSockets.get(playerId)?.emit('game:error', { message: 'Összehasonlítás folyamatban, várj a kör lezárására.' });
+            return;
+        }
+
         // No more try-catch here
-        const result = performPlay(this.gameState, playerId, data.cardInstanceId, data.payload);
+        const result = performPlay(this.gameState, playerId, data.cardInstanceId, (data.payload || {}) as { selectedMetric?: MetricType; targetPlayerId?: string });
         
         if (result.success) {
             // SUCCESS: Update the game state
@@ -157,28 +165,63 @@ export class GameManager {
         this.gameState = newState;
         this.broadcastState();
         
+        // Immediate game-end check after any state change
+        const afterEndCheck = checkGameEndConditions(this.gameState);
+        this.gameState = afterEndCheck;
         if (this.gameState.gameStatus !== 'playing') {
+            // Ensure clients receive the final status/winner patch before ending
+            this.broadcastState();
             this.endGame('Game finished normally.');
-        } else {
-            this.startTurnTimer(); // Minden állapotváltásnál újraindítjuk a timert
-            
-            // AUTO-ADVANCE TURN: If round is resolved, automatically advance turn for ALL players
-            if (this.gameState.currentPlayerPhase === 'round_resolved') {
-                console.log(`[GameManager:${this.gameId}] Round resolved, automatically advancing turn...`);
-                setTimeout(() => this.handleAdvanceTurn(), 1500); // Small delay for UI
-                return; // Don't check bot moves, we're already advancing
+            return;
+        }
+        
+        {
+            // Handle special phases
+            if (this.gameState.currentPlayerPhase === 'both_cards_on_board') {
+                // No turn timer during comparison; schedule resolve
+                this.clearTurnTimer();
+                console.log(`[GameManager:${this.gameId}] Entered both_cards_on_board. Scheduling resolve in 1000ms...`);
+                setTimeout(() => {
+                    // Ensure we are still in the same phase and game not ended
+                    if (this.gameState.gameStatus !== 'playing' || this.gameState.currentPlayerPhase !== 'both_cards_on_board') {
+                        console.log(`[GameManager:${this.gameId}] Resolve skipped: phase changed to ${this.gameState.currentPlayerPhase} or game ended.`);
+                        return;
+                    }
+                    console.log(`[GameManager:${this.gameId}] Resolving round now...`);
+                    const resolved = resolveRound(this.gameState);
+                    // After resolving, move to round_resolved unless we require a discard phase
+                    if (resolved.currentPlayerPhase !== 'must_discard') {
+                        resolved.currentPlayerPhase = 'round_resolved';
+                    }
+                    this.updateState(resolved);
+                }, 1000);
+                return; // Do not schedule bots or timers in this interim phase
             }
-            
-            // Check if bot should move (only for regular turns, not round_resolved)
-            const shouldTriggerBot = this.botIds.has(this.gameState.currentPlayerId);
-            
+
+            if (this.gameState.currentPlayerPhase === 'round_resolved') {
+                this.clearTurnTimer();
+                console.log(`[GameManager:${this.gameId}] Round resolved, auto-advancing turn in 1500ms...`);
+                setTimeout(() => this.handleAdvanceTurn(), 1500);
+                return;
+            }
+
+            // Regular interactive phase: start timer and trigger bot if needed
+            this.startTurnTimer();
+            const shouldTriggerBot = this.botIds.has(this.gameState.currentPlayerId)
+              && (this.gameState.currentPlayerPhase === 'waiting_for_initial_play' || this.gameState.currentPlayerPhase === 'waiting_for_car_card_after_action');
             if (shouldTriggerBot) {
+                console.log(`[GameManager:${this.gameId}] Scheduling bot move in 1500ms for ${this.gameState.currentPlayerId}...`);
                 setTimeout(() => this.triggerBotMove(), 1500);
             }
         }
     }
     private triggerBotMove() {
         if (!this.botIds.has(this.gameState.currentPlayerId) || this.gameState.gameStatus !== 'playing') return;
+
+        if (this.gameState.currentPlayerPhase === 'both_cards_on_board') {
+            console.log(`[GameManager:${this.gameId}] Bot move suppressed during both_cards_on_board phase.`);
+            return;
+        }
 
         const botId = this.gameState.currentPlayerId;
         
@@ -267,7 +310,7 @@ export class GameManager {
     }
     public destroy() {
         this.clearTurnTimer();
-        this.playerSockets.forEach((socket, playerId) => {
+        this.playerSockets.forEach((socket) => {
             socket.removeAllListeners('game:playCard');
             socket.removeAllListeners('game:advanceTurn');
             socket.leave(this.gameId);

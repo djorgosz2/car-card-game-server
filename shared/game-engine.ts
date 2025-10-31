@@ -5,8 +5,10 @@
 // ======================================================================
 
 import { v4 as uuidv4 } from 'uuid'; // npm install uuid, @types/uuid
+import * as fs from 'fs';
+import * as path from 'path';
 // Assuming interfaces.ts is in the same directory or accessible
-import { IGameState, IPlayerState, GameStatus, ICardDefinition, ICardInstance, ICarCard, IActionCard, MetricType, PlayerId, PlayerActionPhase, CardMetrics } from './interfaces';
+import { IGameState, IPlayerState, GameStatus, ICardDefinition, ICardInstance, ICarCard, IActionCard, MetricType, PlayerId, CardMetrics } from './interfaces';
 import CarList from '../shared/data/CarList.json';
 // --- Determinisztikus RNG ---
 class DeterministicRNG {
@@ -260,14 +262,14 @@ export function parseJsonToCarCards(jsonData: JsonCarData[]): ICarCard[] {
         return; // Skip this car if essential data is missing or invalid
       }
       
-      // Generate image URLs pointing to server's static files
-      // Image file naming convention: car-brand-model-year.jpg (lowercase, spaces replaced with dashes)
-      const imageSlug = `${brand}-${model}-${year}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-      const brandSlug = brand.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-      
+      // Use a single placeholder image for all cars during testing
+      // (Name-based mapping commented out for consistency)
+      // const imageSlug = `${brand}-${model}-${year}`.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+      // const brandSlug = brand.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
       const SERVER_URL = process.env.SERVER_URL || 'http://localhost:3000';
-      const imageUrl = `${SERVER_URL}/images/car-${imageSlug}.jpg`;
-      const brandLogoUrl = `${SERVER_URL}/images/brand-${brandSlug}.png`;
+      const PLACEHOLDER = process.env.PLACEHOLDER_CAR_IMAGE || `${SERVER_URL}/images/placeholder-car.png`;
+      const imageUrl = PLACEHOLDER;
+      const brandLogoUrl = undefined as unknown as string | undefined;
 
       cars.push({
         // Dynamic ID based on car data, made URL-friendly
@@ -447,8 +449,62 @@ export const getCarCardDefinition = (card: ICardInstance): ICarCard => {
 };
 
 
+// --- 2. Játék Inicializálási Beállítások (Exportált funkció) ---
+interface GameInitConfig {
+  initialHand: {
+    NR_OF_ACTION_CARDS: number;
+    NR_OF_CAR_CARDS: number;
+  };
+  deck: {
+    MAX_CARS_IN_DECK: number;
+    MAX_ACTIONS_IN_DECK: number;
+  };
+}
+
+export const getGameInitConfig = (): GameInitConfig => {
+  try {
+    // Try to load from JSON file (server-side)
+    // Use path relative to this file's location
+    const configPath = path.join(__dirname, 'data', 'gameInit.json');
+    // Alternative: if __dirname doesn't work in some environments, try relative path
+    const altConfigPath = path.resolve(__dirname, '..', 'shared', 'data', 'gameInit.json');
+    
+    let filePath = configPath;
+    if (!fs.existsSync(filePath) && fs.existsSync(altConfigPath)) {
+      filePath = altConfigPath;
+    }
+    
+    if (fs.existsSync(filePath)) {
+      const configData = fs.readFileSync(filePath, 'utf-8');
+      const config = JSON.parse(configData) as GameInitConfig;
+      console.log('[GameEngine] Loaded gameInit.json:', config);
+      return config;
+    } else {
+      console.warn('[GameEngine] gameInit.json not found at', filePath, 'or', altConfigPath, '- using defaults');
+    }
+  } catch (error) {
+    console.warn('[GameEngine] Failed to load gameInit.json, using defaults:', error);
+  }
+  
+  // Fallback defaults
+  return {
+    initialHand: {
+      NR_OF_ACTION_CARDS: 1,
+      NR_OF_CAR_CARDS: 2,
+    },
+    deck: {
+      MAX_CARS_IN_DECK: 20,
+      MAX_ACTIONS_IN_DECK: 5,
+    },
+  };
+};
+
 // --- 2. Játék Inicializálás (Exportált funkció) ---
-export const initializeGame = (playerIds: PlayerId[], playerNames: string[], initialSeed: number, timeLimit: number, isInitialDrawEnabled: boolean): IGameState => {
+export const initializeGame = (playerIds: PlayerId[], playerNames: string[], initialSeed: number, timeLimit: number, _isInitialDrawEnabled: boolean): IGameState => {
+  // acknowledge param to satisfy no-unused-params without changing API
+  if (_isInitialDrawEnabled === true || _isInitialDrawEnabled === false) {
+    // no-op
+  }
   const rng = new DeterministicRNG(initialSeed);
 
   // Kártya definíciók betöltése (ha még nem történt meg)
@@ -469,8 +525,10 @@ export const initializeGame = (playerIds: PlayerId[], playerNames: string[], ini
       console.warn("Nincsenek betöltött akciókártyák!");
   }
 
-  const numCarsInDeck = Math.min(20, allCarCardDefs.length); // Max 20 autó, vagy amennyi van
-  const numActionsInDeck = Math.min(5, allActionCardDefs.length); // Max 5 akció, vagy amennyi van
+  // Load game initialization config
+  const gameConfig = getGameInitConfig();
+  const numCarsInDeck = Math.min(gameConfig.deck.MAX_CARS_IN_DECK, allCarCardDefs.length);
+  const numActionsInDeck = Math.min(gameConfig.deck.MAX_ACTIONS_IN_DECK, allActionCardDefs.length);
 
   const carsForDeck = rng.shuffle(allCarCardDefs).slice(0, numCarsInDeck);
   const actionsForDeck = rng.shuffle(allActionCardDefs).slice(0, numActionsInDeck);
@@ -496,20 +554,47 @@ export const initializeGame = (playerIds: PlayerId[], playerNames: string[], ini
     score: 0,
   }));
 
-  // Lapok kiosztása (7-7 lap)
-  for (let i = 0; i < 7; i++) {
-    players.forEach(player => {
-      if (shuffledDeck.length > 0) {
-        player.hand.push(shuffledDeck.shift()!);
+  // Kártya kiosztás a config alapján
+  // Válogassuk szét a paklit autós és akció kártyákra
+  const carCards: ICardInstance[] = [];
+  const actionCards: ICardInstance[] = [];
+  
+  shuffledDeck.forEach(card => {
+    const cardDef = getCardDefinition(card.cardId);
+    if (cardDef && isCarCardDef(cardDef)) {
+      carCards.push(card);
+    } else if (cardDef && isActionCardDef(cardDef)) {
+      actionCards.push(card);
+    }
+  });
+
+  // Minden játékos kap a config-ban meghatározott számú akció és autóskártyát
+  players.forEach(player => {
+    // Akció kártyák
+    for (let i = 0; i < gameConfig.initialHand.NR_OF_ACTION_CARDS; i++) {
+      if (actionCards.length > 0) {
+        player.hand.push(actionCards.shift()!);
       }
-    });
-  }
+    }
+    // Autóskártyák
+    for (let i = 0; i < gameConfig.initialHand.NR_OF_CAR_CARDS; i++) {
+      if (carCards.length > 0) {
+        player.hand.push(carCards.shift()!);
+      }
+    }
+  });
+
+  // A maradék kártyákat a drawPile-be tesszük (autókat és akciókat keverve)
+  const remainingCards = [...carCards, ...actionCards];
+  rng.shuffle(remainingCards); // Keverjük össze a maradékot
+  shuffledDeck.length = 0; // Töröljük az eredetit
+  shuffledDeck.push(...remainingCards); // Beletesszük a maradékot
 
   // For testing: always start with the first player (human player)
   // Comment out random selection and use first player instead
   // const startingPlayerId = rng.pickRandom(playerIds);
   const startingPlayerId = playerIds[0]; // Always first player starts (for testing)
-  const opponentPlayerId = playerIds.find(id => id !== startingPlayerId)!; // Biztosan létezik 2 játékosnál
+  // const opponentPlayerId = playerIds.find(id => id !== startingPlayerId)!; // Biztosan létezik 2 játékosnál
 
   return {
     gameId: uuidv4(),
@@ -716,20 +801,14 @@ export const performPlay = (
     newState.currentPlayerPhase = 'turn_ended';
   }
   
-  // --- JAVÍTOTT RÉSZ ---
-  // Kör kiértékelése, ha mindkét játékos tett le autót
+  // --- MÓDOSÍTÁS ---
+  // Ha mindkét játékos tett le autót, mostantól NEM azonnal zárjuk a kört,
+  // hanem előbb küldünk egy köztes állapotot: 'both_cards_on_board'.
   if (newState.carCardsOnBoard[player.id] && newState.carCardsOnBoard[opponent.id]) {
-    // ResolveRound might still throw internal errors, keep that possibility
-    try {
-        newState = resolveRound(newState); 
-    } catch (e: any) {
-        console.error("Internal error during resolveRound:", e);
-        return { success: false, message: "Belső hiba a kör lezárásakor." };
-    }
-    // Csak akkor állítsuk be a 'round_resolved' fázist, ha a resolveRound nem állított be egy specifikusabbat.
-    if (newState.currentPlayerPhase !== 'must_discard') {
-      newState.currentPlayerPhase = 'round_resolved';
-    }
+    newState.currentPlayerPhase = 'both_cards_on_board';
+    newState.gameLog.push(`Mindkét játékos kijátszotta a kártyáját!`);
+    // A szerver felelős ezután egy rövid késleltetés után meghívni a resolveRound-ot,
+    // majd az új állapotot kiküldeni a klienseknek (pl. 'round_resolved' fázissal).
   }
 
   // A `checkGameEndConditions` hívás maradjon itt, mert a kör lezárása is okozhatja a játék végét
@@ -890,8 +969,10 @@ export const checkGameEndConditions = (state: IGameState): IGameState => {
     }
     
     // 2. Ha minden lap elfogyott a húzópakliból ÉS mindkét játékos kezéből (végső döntetlen)
-    // Ezt csak akkor ellenőrizzük, ha még nem találtunk győztest
-    if (!winnerId && currentPlayerState.hand.length === 0 && opponentPlayerState.hand.length === 0 && newState.drawPile.length === 0) {
+    // FONTOS: ezt csak akkor ellenőrizzük, ha az asztal üres (nem vagyunk épp összehasonlítás alatt)
+    // és még nem találtunk győztest.
+    const boardIsEmpty = Object.values(newState.carCardsOnBoard).every(v => v === null);
+    if (!winnerId && boardIsEmpty && currentPlayerState.hand.length === 0 && opponentPlayerState.hand.length === 0 && newState.drawPile.length === 0) {
         status = 'tie';
         reason = "Döntetlen - minden lap elfogyott!";
     }
@@ -947,11 +1028,13 @@ export const getClientGameState = (serverState: IGameState, requestingPlayerId: 
   });
 
   // A húzópakli tartalmát nem küldjük el, csak a méretét
-  (clientState as any).drawPileSize = clientState.drawPile.length; // Kliensnek küldjük a méretet
+  const clientStateWithMeta = clientState as IGameState & { drawPileSize: number; rngSeed?: unknown };
+  clientStateWithMeta.drawPileSize = clientState.drawPile.length; // Kliensnek küldjük a méretet
   clientState.drawPile = []; // Ürítjük a tömböt, mielőtt elküldjük
 
   // RNG seed-et ne küldjük el a kliensnek, az szerver oldali titok
-  delete (clientState as any).rngSeed;
+  const clientStateNoSeed = clientState as unknown as { rngSeed?: unknown };
+  clientStateNoSeed.rngSeed = undefined;
 
   return clientState;
 };

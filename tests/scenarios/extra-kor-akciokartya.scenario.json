@@ -42,7 +42,7 @@
         "playerId": "player-2",
         "findCard": { "type": "car" },
         "expectedState": {
-          "roundWinnerId": "player-1"
+          "currentPlayerPhase": "both_cards_on_board"
         }
       },
       {

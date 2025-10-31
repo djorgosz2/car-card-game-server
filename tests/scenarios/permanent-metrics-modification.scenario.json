@@ -15,8 +15,7 @@
         "playerId": "player-2",
         "findCard": { "type": "car" },
         "expectedState": {
-          "roundWinnerId": "player-2",
-          "player-2_handSize": 2
+          "currentPlayerPhase": "both_cards_on_board"
         }
       },
       { "action": "advanceTurn", "expectedState": { "currentPlayerId": "player-2" } },

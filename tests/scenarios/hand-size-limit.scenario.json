@@ -20,10 +20,7 @@
         "playerId": "player-2",
         "findCard": { "type": "car" },
         "expectedState": {
-          "roundWinnerId": "player-1",
-          "player-1_handSize": 11,
-          "currentPlayerId": "player-1",
-          "currentPlayerPhase": "must_discard"
+          "currentPlayerPhase": "both_cards_on_board"
         }
       }
     ]

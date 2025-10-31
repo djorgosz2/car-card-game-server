@@ -1,0 +1,11 @@
+{
+  "initialHand": {
+    "NR_OF_ACTION_CARDS": 1,
+    "NR_OF_CAR_CARDS": 2
+  },
+  "deck": {
+    "MAX_CARS_IN_DECK": 20,
+    "MAX_ACTIONS_IN_DECK": 5
+  }
+}
+
