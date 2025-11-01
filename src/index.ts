@@ -51,6 +51,7 @@ const matchmakingManager = new MatchmakingManager(io, {
   maxPlayersPerMatch: 2,
   aiEnabled: true,
   aiDelayMs: 500,  // Reduced from 5000ms to 500ms for faster bot matching in tests
+  humanOnlyMaxWaitMs: 8000, // Szerver-vezérelt türelmi idő az ember-ember preferenciához
 });
 
 // --- A Rendszer Magja: Eseménykezelők ---
@@ -67,14 +68,14 @@ matchmakingManager.on('match-found', ({ players }: { players: PlayerInLobby[] })
     const gameToEnd = activeGames.get(endedGameId);
     if (gameToEnd) {
       gameToEnd.destroy();
-      gameToEnd.getPlayers().forEach((player: any) => playerToGameMap.delete(player.userId));
+      gameToEnd.getPlayers().forEach((player: { userId: PlayerId; username: string; isBot: boolean }) => playerToGameMap.delete(player.userId));
       activeGames.delete(endedGameId);
     }
   });
 
   console.log(`[Server] Game created with ID: ${game.gameId}`);
   activeGames.set(game.gameId, game);
-  players.forEach((player: any) => playerToGameMap.set(player.userId, game.gameId));
+  players.forEach((player: { userId: PlayerId; username: string; isBot: boolean }) => playerToGameMap.set(player.userId, game.gameId));
 });
 
 io.on('connection', (socket: CustomSocket) => {
@@ -82,15 +83,25 @@ io.on('connection', (socket: CustomSocket) => {
 
   // Az authentikáció egyszerűsítve: a kliens küld egy user ID-t és nevet.
   // Éles rendszerben itt JWT token validálás történne.
+  // Alapszintű, szerver-oldali szanálás a dev környezethez
+  const isValidId = (id: string) => /^[A-Za-z0-9_-]{3,32}$/.test(id);
+  const isValidUsername = (name: string) => /^[A-Za-z0-9 _\-.]{2,24}$/.test(name);
+  const sanitizeOrFallback = (value: string | undefined | null, fallback: string, validator: (v: string) => boolean) => {
+    if (!value || typeof value !== 'string') return fallback;
+    return validator(value) ? value : fallback;
+  };
+
   socket.on('auth:authenticate', ({ userId, username }) => {
     if (!userId || !username) {
       socket.emit('auth:error', { message: 'Hiányzó userId vagy username.' });
       return;
     }
-    socket.data.userId = userId;
-    socket.data.username = username;
-    socket.emit('auth:success', { userId, username });
-    console.log(`[Server] User ${username} (${userId}) identified for socket ${socket.id}.`);
+    const safeUserId = sanitizeOrFallback(userId, `guest-${socket.id.slice(0, 8)}`, isValidId) as PlayerId;
+    const safeUsername = sanitizeOrFallback(username, 'Guest', isValidUsername);
+    socket.data.userId = safeUserId;
+    socket.data.username = safeUsername;
+    socket.emit('auth:success', { userId: safeUserId, username: safeUsername });
+    console.log(`[Server] User ${safeUsername} (${safeUserId}) identified for socket ${socket.id}.`);
 
     // Visszacsatlakozás kezelése
     const gameId = playerToGameMap.get(userId);
@@ -102,7 +113,7 @@ io.on('connection', (socket: CustomSocket) => {
   });
 
   // A kérést egyszerűen továbbítjuk a matchmakingManager-nek.
-  socket.on('matchmaking:join', () => {
+  socket.on('matchmaking:join', (data?: { humanOnly?: boolean }) => {
     const { userId, username } = socket.data;
     if (!userId || !username) {
       socket.emit('error:auth', { message: 'Authentikáció szükséges.' });
@@ -113,7 +124,8 @@ io.on('connection', (socket: CustomSocket) => {
       socket.emit('matchmaking:error', { message: 'Már egy futó játékban vagy!' });
       return;
     }
-    matchmakingManager.joinLobby(socket, userId, username);
+    // A "humanOnly" csak preferencia; a szerver türelmi idő után felülírhatja
+    matchmakingManager.joinLobby(socket, userId, username, { humanOnly: !!data?.humanOnly });
   });
 
   socket.on('matchmaking:cancel', () => {

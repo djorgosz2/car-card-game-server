@@ -159,3 +159,231 @@ The `both_cards_played` bug taught us:
 
 These improvements ensure similar bugs will be caught in the future! 🚀
 
+---
+
+## 🔌 Socket.IO Integrációs Tesztelés (PVP Smoke Test)
+
+### Mi volt a feladat?
+Első PVP (Player vs Player) matchmaking integrációs teszt készítése, amely:
+- Két külön Socket.IO klienst szimulál
+- Mindkét kliens PVP módban (`humanOnly: true`) csatlakozik
+- Várja a játék indítását
+- Mindkét kliens játszik egy kártyát
+
+### Tanulságok
+
+#### 1️⃣ **TypeScript Closure Típuskövetés Limitációi**
+
+**Probléma:**
+A `aState` és `bState` változókat closure-ökben használtuk, és a TypeScript nem tudta követni a típusokat:
+
+```typescript
+let aState: GameStateClient | null = null;
+
+const applyA = (patch: jsonpatch.Operation[]) => {
+  if (!aState) return;
+  const patched = jsonpatch.applyPatch(...).newDocument;
+  aState = patched as GameStateClient;  // ← Type assertion szükséges
+};
+
+// Később a while loop-ban:
+if (aState && aState.gameStatus === 'playing') {  // ← TS hiba: 'never' típus
+  // ...
+}
+```
+
+**Megoldás:**
+Explicit type assertion használata a hozzáféréskor:
+
+```typescript
+if (!ready.aPlayed && aState) {
+  const currentA = aState as GameStateClient;  // ← Explicit assertion
+  if (currentA.gameStatus === 'playing') {
+    // Most már működik
+  }
+}
+```
+
+**Tanulság:** Closure-ökben lévő változók típusait a TypeScript nem mindig követi helyesen, explicit type assertion használata szükséges lehet.
+
+---
+
+#### 2️⃣ **Socket.IO Event Lifecycle Követése**
+
+**Fontos láncolat:**
+```
+1. connect
+   ↓
+2. emit('auth:authenticate', { userId, username })
+   ↓
+3. on('auth:success')
+   ↓
+4. emit('matchmaking:join', { humanOnly: true })
+   ↓
+5. on('matchmaking:joined')  (opcionális)
+   ↓
+6. on('game:start')  ← EZ jelzi, hogy a játék elindult!
+   ↓
+7. on('game:stateUpdate')  ← TELJES állapot (első alkalommal)
+   ↓
+8. on('game:patch')  ← INKREMENTÁLIS frissítések (JSON Patch)
+```
+
+**Tanulság:** A `game:start` esemény a kritikus pont - onnantól lehet biztonságosan játszani. A `game:stateUpdate` és `game:patch` eseményeket külön kezelni kell.
+
+---
+
+#### 3️⃣ **JSON Patch Alkalmazása**
+
+**Probléma:**
+A szerver inkrementális frissítéseket küld JSON Patch formátumban. A state-et patchelni kell:
+
+```typescript
+const applyA = (patch: jsonpatch.Operation[]) => {
+  if (!aState) return;
+  // Deep clone + patch alkalmazás
+  const patched = jsonpatch.applyPatch(
+    JSON.parse(JSON.stringify(aState)),  // Deep clone
+    patch,
+    false,  // don't validate
+    false   // don't mutate original
+  ).newDocument;
+  aState = patched as GameStateClient;
+};
+```
+
+**Tanulság:** 
+- **Deep clone szükséges** mielőtt patchelnénk (immutability)
+- A `fast-json-patch` library `applyPatch` metódusa új dokumentumot ad vissza
+- Type assertion szükséges, mert a patch result típusa `any`
+
+---
+
+#### 4️⃣ **Timeout Kezelés Integrációs Tesztekben**
+
+**Megközelítés:**
+```typescript
+// Game start várakozás
+const startDeadline = Date.now() + 15000;  // 15 másodperc
+while (!(ready.aStarted && ready.bStarted)) {
+  if (Date.now() > startDeadline) {
+    throw new Error('Timeout waiting for game:start');
+  }
+  await delay(100);  // Polling 100ms-enként
+}
+
+// Card play várakozás
+const playLoopDeadline = Date.now() + 30000;  // 30 másodperc
+while (!(ready.aPlayed && ready.bPlayed)) {
+  // ... play logic ...
+  await delay(100);
+}
+```
+
+**Tanulság:**
+- **Polling pattern** használata timeout-tal
+- Realisztikus időkorlátok (15s game start, 30s card play)
+- Hibás esetben explicit hibaüzenet timeout-ról
+- `delay()` helper függvény használata (Promise alapú)
+
+---
+
+#### 5️⃣ **Game State Phase Ellenőrzés**
+
+**Fontos:**
+Csak akkor játszhatunk kártyát, ha:
+- `gameStatus === 'playing'`
+- `currentPlayerId === myId` (sorunk van)
+- `currentPlayerPhase === 'waiting_for_initial_play'` VAGY `'waiting_for_car_card_after_action'`
+
+```typescript
+if (currentA.gameStatus === 'playing' &&
+    currentA.currentPlayerId === aId &&
+    (currentA.currentPlayerPhase === 'waiting_for_initial_play' ||
+     currentA.currentPlayerPhase === 'waiting_for_car_card_after_action')) {
+  // Játszhatunk!
+}
+```
+
+**Tanulság:** A játéklogika fázisait a szerver vezérli, a kliens csak reagál. A phase ellenőrzés kritikus a valid játékmenethez.
+
+---
+
+#### 6️⃣ **Két Klienst Egyszerre Kezelni**
+
+**Struktúra:**
+```typescript
+const a = io(SERVER_URL, { transports: ['websocket'], autoConnect: false });
+const b = io(SERVER_URL, { transports: ['websocket'], autoConnect: false });
+
+let aState: GameStateClient | null = null;
+let bState: GameStateClient | null = null;
+
+const ready = { 
+  aStarted: false, 
+  bStarted: false, 
+  aPlayed: false, 
+  bPlayed: false 
+};
+
+// Mindkét kliensnek ugyanazt az event listener struktúrát kell felállítani
+a.on('connect', () => { /* ... */ });
+b.on('connect', () => { /* ... */ });
+```
+
+**Tanulság:**
+- **Paralelizált socket kezelés** - mindkét kliens ugyanúgy működik
+- **Külön state változók** minden klienshez
+- **Közös ready flag objektum** a koordinációhoz
+- **Promise-based async flow** a timeout-okkal
+
+---
+
+#### 7️⃣ **Car Card Keresés a Kézből**
+
+**Logika:**
+```typescript
+function firstCarCardInHand(state: GameStateClient, myId: PlayerId): CardInstance | null {
+  const me = state.players.find(p => p.id === myId);
+  if (!me) return null;
+  // Car card = van currentMetrics (autóskártyák metrikákkal rendelkeznek)
+  const car = me.hand.find(c => !!c.currentMetrics);
+  return car || null;
+}
+```
+
+**Tanulság:**
+- Car card azonosítása: `currentMetrics` megléte (action kártyáknak nincs)
+- Első elérhető autós kártya választása egyszerű stratégiával
+- Null check minden lépésben (defensív programozás)
+
+---
+
+### ✅ Best Practices Socket.IO Tesztekhez
+
+1. **Mindig használj `autoConnect: false`** és manuálisan hívd a `connect()` metódust
+2. **Type assertions** használata closure-ökben lévő változókhoz
+3. **Polling pattern** timeout-okkal ahelyett, hogy Promise.race-tel várnánk
+4. **Deep clone** JSON Patch alkalmazása előtt
+5. **Explicit phase checks** a játéklogika validálásához
+6. **Timeout értékek** realisztikusak legyenek (15-30s network op-okhoz)
+7. **Error handling** minden timeout-ban és state check-ben
+
+---
+
+### 🎯 Összefoglalás
+
+A PVP smoke teszt sikeresen validálta:
+- ✅ Human-only matchmaking működése
+- ✅ Két emberi játékos párosítása bot nélkül
+- ✅ Game state szinkronizálás (stateUpdate + patch)
+- ✅ Card play működése mindkét kliensnél
+
+A fő tanulságok:
+- **TypeScript closure limitációk** → explicit type assertions
+- **Socket.IO lifecycle** követése event sorrenddel
+- **JSON Patch kezelés** deep clone-nal
+- **Polling + timeout** pattern integrációs tesztekhez
+
+---
+

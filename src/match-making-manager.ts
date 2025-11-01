@@ -17,6 +17,7 @@ export interface PlayerInLobby {
   socketId: string;
   joinedAt: number;
   isBot: boolean;
+  humanOnly?: boolean;
 }
 
 /**
@@ -26,6 +27,11 @@ export interface MatchmakingConfig {
   maxPlayersPerMatch: number;
   aiEnabled: boolean;
   aiDelayMs: number;
+  /**
+   * Max time (ms) to honor "human-only" preference before allowing AI fallback.
+   * Prevents a single client from indefinitely blocking matches by requesting human-only.
+   */
+  humanOnlyMaxWaitMs: number;
 }
 
 /**
@@ -38,7 +44,7 @@ class MatchmakingManager extends EventEmitter {
 
   // Állapotok: már csak a lobbyhoz kapcsolódó adatok.
   private playersInLobby = new Map<PlayerId, PlayerInLobby>();
-  private aiSpawnTimer: NodeJS.Timeout | null = null;
+  private aiSpawnTimer: ReturnType<typeof setTimeout> | null = null;
   private botCounter = 0;
 
   constructor(io: Server, config: MatchmakingConfig) {
@@ -48,14 +54,14 @@ class MatchmakingManager extends EventEmitter {
     this.log('MatchmakingManager initialized');
   }
 
-  private log(message: string, data?: any) {
+  private log(message: string, data?: unknown) {
     console.log(`[MatchmakingManager] ${message}`, data ? JSON.stringify(data, null, 2) : '');
   }
 
   /**
    * Egy játékos csatlakozik a várólistához.
    */
-  public joinLobby(socket: Socket, userId: PlayerId, username: string) {
+  public joinLobby(socket: Socket, userId: PlayerId, username: string, options?: { humanOnly?: boolean }) {
     // A validációk (pl. már játékban van-e) a fő szerver fájl felelőssége lesz.
     if (this.playersInLobby.has(userId)) {
       socket.emit('matchmaking:error', { message: 'Már a lobbyban vagy!' });
@@ -68,6 +74,7 @@ class MatchmakingManager extends EventEmitter {
       socketId: socket.id,
       joinedAt: Date.now(),
       isBot: false,
+      humanOnly: !!options?.humanOnly,
     };
 
     this.playersInLobby.set(userId, playerData);
@@ -102,7 +109,22 @@ class MatchmakingManager extends EventEmitter {
   private scheduleAISpawn() {
     if (!this.config.aiEnabled || this.aiSpawnTimer) return;
     
-    const humanPlayerCount = Array.from(this.playersInLobby.values()).filter(p => !p.isBot).length;
+    const humans = Array.from(this.playersInLobby.values()).filter(p => !p.isBot);
+    const humanPlayerCount = humans.length;
+    const now = Date.now();
+
+    // Respect human-only preference up to a maximum wait time (server-enforced)
+    const humanOnlyPlayers = humans.filter(p => p.humanOnly);
+    if (humanOnlyPlayers.length > 0) {
+      const earliestJoin = Math.min(...humanOnlyPlayers.map(p => p.joinedAt));
+      const waitedMs = Math.max(0, now - earliestJoin);
+      if (waitedMs < this.config.humanOnlyMaxWaitMs) {
+        // Within grace period: do not spawn AI
+        return;
+      }
+      // Grace expired: allow AI fallback
+    }
+
     if (humanPlayerCount > 0 && this.playersInLobby.size < this.config.maxPlayersPerMatch) {
       this.log(`Scheduling AI spawn in ${this.config.aiDelayMs}ms`);
       this.aiSpawnTimer = setTimeout(() => this.spawnAIBot(), this.config.aiDelayMs);
@@ -148,7 +170,16 @@ class MatchmakingManager extends EventEmitter {
         this.aiSpawnTimer = null;
     }
 
-    const playersForMatch = Array.from(this.playersInLobby.values()).slice(0, this.config.maxPlayersPerMatch);
+    // Preferáljuk a két emberi játékost, ha elérhető
+    const lobbyArr = Array.from(this.playersInLobby.values());
+    const humans = lobbyArr.filter(p => !p.isBot).sort((a, b) => a.joinedAt - b.joinedAt);
+    const bots = lobbyArr.filter(p => p.isBot).sort((a, b) => a.joinedAt - b.joinedAt);
+    let playersForMatch: PlayerInLobby[] = [];
+    if (humans.length >= this.config.maxPlayersPerMatch) {
+      playersForMatch = humans.slice(0, this.config.maxPlayersPerMatch);
+    } else {
+      playersForMatch = humans.concat(bots).slice(0, this.config.maxPlayersPerMatch);
+    }
     playersForMatch.forEach(player => this.playersInLobby.delete(player.userId));
     
     this.log('Match found! Emitting event for players:', playersForMatch.map(p => p.username));
