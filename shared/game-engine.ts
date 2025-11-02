@@ -834,7 +834,7 @@ export const performPlay = (
 };
 
 
-// --- 5. Kör lezárása és győztes meghatározása (Exportált funkció) ---
+// --- 5. Kör lezárása és győztes meghatározása ---
 export const resolveRound = (state: IGameState): IGameState => {
   let newState: IGameState = JSON.parse(JSON.stringify(state));
   const player1 = newState.players[0];
@@ -843,6 +843,10 @@ export const resolveRound = (state: IGameState): IGameState => {
   const player2Card = newState.carCardsOnBoard[player2.id];
 
   if (!player1Card || !player2Card || !newState.selectedMetricForRound) {
+    console.error("resolveRound: Nem lehet lezárni a kört, hiányzó kártya vagy metrika.");
+    console.error("player1Card: ", player1Card);
+    console.error("player2Card: ", player2Card);
+    console.error("newState.selectedMetricForRound: ", newState.selectedMetricForRound);
     throw new Error("GameEngine hiba: Nem lehet lezárni a kört, hiányzó kártya vagy metrika.");
   }
 
@@ -900,6 +904,8 @@ export const resolveRound = (state: IGameState): IGameState => {
   // Tisztítás az asztalról és az aktív akciókártyákról
   newState.carCardsOnBoard = { [player1.id]: null, [player2.id]: null };
   newState.activeActionCardsOnBoard = { [player1.id]: null, [player2.id]: null }; // Akciókártyák elvésznek a kör végén
+  // Töröljük a függőben lévő metrika módosítókat is, mert ha a kör lezárult, már nem lehet érvényesíteni őket
+  newState.pendingMetricModifiers = { [player1.id]: null, [player2.id]: null };
   
   // Játék vége ellenőrzés
   newState = checkGameEndConditions(newState);
@@ -934,11 +940,49 @@ export const advanceTurn = (state: IGameState, roundWinnerId: PlayerId | null): 
 
   newState.currentPlayerId = nextPlayerId;
   newState.currentTurnStartTime = Date.now(); 
-  newState.currentPlayerPhase = 'waiting_for_initial_play';
+  // CRITICAL: Always set phase to waiting_for_initial_play unless we're in must_discard
+  const oldPhase = newState.currentPlayerPhase;
+  if (newState.currentPlayerPhase !== 'must_discard') {
+    newState.currentPlayerPhase = 'waiting_for_initial_play';
+  }
+  // Debug log (only in test environment)
+  console.log(`[advanceTurn] Phase change: ${oldPhase} -> ${newState.currentPlayerPhase}, nextPlayer: ${nextPlayerId}`);
+  
 
   newState.gameLog.push(`--> Most ${getPlayerState(newState, newState.currentPlayerId).name} köre.`);
 
   return newState;
+};
+
+// --- 6b. Discard flow (Exportált funkció) ---
+// Ezt a szerver hívja meg, amikor egy játékos eldob egy lapot a must_discard fázisban.
+export const performDiscard = (
+  state: IGameState,
+  playerId: PlayerId,
+  cardInstanceId: string,
+): { success: true; newState: IGameState } | { success: false; message: string } => {
+  const newState: IGameState = JSON.parse(JSON.stringify(state));
+  const player = getPlayerState(newState, playerId);
+
+  if (newState.currentPlayerPhase !== 'must_discard') {
+    return { success: false, message: 'Most nem dobhatsz el lapot.' };
+  }
+  if (newState.currentPlayerId !== playerId) {
+    return { success: false, message: 'Nem a te köröd az eldobáshoz.' };
+  }
+
+  const idx = player.hand.findIndex(c => c.instanceId === cardInstanceId);
+  if (idx === -1) {
+    return { success: false, message: 'A kiválasztott lap nem található a kezedben.' };
+  }
+
+  const [discarded] = player.hand.splice(idx, 1);
+  newState.discardPile.push(discarded);
+  newState.gameLog.push(`${player.name} eldobott egy lapot.`);
+
+  // After discarding, proceed to the next turn according to server semantics
+  const advanced = advanceTurn(newState, newState.roundWinnerId);
+  return { success: true, newState: advanced };
 };
 
 // --- 7. Játék Vége Feltételek (Exportált funkció) ---
@@ -972,6 +1016,26 @@ export const checkGameEndConditions = (state: IGameState): IGameState => {
     // FONTOS: ezt csak akkor ellenőrizzük, ha az asztal üres (nem vagyunk épp összehasonlítás alatt)
     // és még nem találtunk győztest.
     const boardIsEmpty = Object.values(newState.carCardsOnBoard).every(v => v === null);
+
+    // 1/b. Azonnali győzelem, ha körlezárás után (üres board mellett) bármelyik játékosnak
+    // 0 autós kártyája maradt.
+    // FONTOS: Ezt csak akkor ellenőrizzük, ha már NEM vagyunk both_cards_on_board fázisban,
+    // mert akkor még nem történt advanceTurn, és előbb ki kell értékelni a következő kört.
+    if (!winnerId && boardIsEmpty && newState.currentPlayerPhase !== 'both_cards_on_board') {
+        const p1 = newState.players[0];
+        const p2 = newState.players[1];
+        const p1Cars = p1.hand.filter(c => isCarCardDef(getCardDefinition(c.cardId)!)).length;
+        const p2Cars = p2.hand.filter(c => isCarCardDef(getCardDefinition(c.cardId)!)).length;
+        if (p1Cars === 0 && p2Cars > 0) {
+            winnerId = p2.id;
+            status = 'win';
+            reason = `${p1.name} kifogyott az autós kártyákból!`;
+        } else if (p2Cars === 0 && p1Cars > 0) {
+            winnerId = p1.id;
+            status = 'win';
+            reason = `${p2.name} kifogyott az autós kártyákból!`;
+        }
+    }
     if (!winnerId && boardIsEmpty && currentPlayerState.hand.length === 0 && opponentPlayerState.hand.length === 0 && newState.drawPile.length === 0) {
         status = 'tie';
         reason = "Döntetlen - minden lap elfogyott!";

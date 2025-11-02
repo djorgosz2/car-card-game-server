@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
 import * as jsonpatch from 'fast-json-patch';
 import { IGameState, PlayerId, MetricType } from '../shared/interfaces';
-import { initializeGame, performPlay, getClientGameState, advanceTurn, endGameByTimeout, resolveRound, checkGameEndConditions } from '../shared/game-engine';
+import { initializeGame, performPlay, performDiscard, getClientGameState, advanceTurn, endGameByTimeout, resolveRound, checkGameEndConditions } from '../shared/game-engine';
 import { decideMove } from './ai-manager';
 import { PlayerInLobby } from './match-making-manager';
 
@@ -103,9 +103,11 @@ export class GameManager {
         // A listener-eket "off"-oljuk először, hogy a reconnect ne duplikálja őket
         socket.removeAllListeners('game:playCard');
         socket.removeAllListeners('game:advanceTurn');
+        socket.removeAllListeners('game:discardCard');
 
         socket.on('game:playCard', (data) => this.handlePlayerMove(playerId, data as { cardInstanceId: string; payload?: Record<string, unknown> }));
         socket.on('game:advanceTurn', () => this.handleAdvanceTurn());
+        socket.on('game:discardCard', (data) => this.handleDiscard(playerId, data as { cardInstanceId: string }));
     }
 
     private startGame() {
@@ -158,6 +160,23 @@ export class GameManager {
         if (this.gameState.currentPlayerPhase === 'round_resolved' && this.gameState.gameStatus === 'playing') {
             const newState = advanceTurn(this.gameState, this.gameState.roundWinnerId);
             this.updateState(newState);
+        }
+    }
+    
+    private handleDiscard(playerId: PlayerId, data: { cardInstanceId: string }) {
+        if (this.gameState.currentPlayerId !== playerId || this.gameState.gameStatus !== 'playing') {
+            return;
+        }
+        if (this.gameState.currentPlayerPhase !== 'must_discard') {
+            this.playerSockets.get(playerId)?.emit('game:error', { message: 'Most nem dobhatsz el lapot.' });
+            return;
+        }
+        const result = performDiscard(this.gameState, playerId, data.cardInstanceId);
+        if (result.success) {
+            this.updateState(result.newState);
+        } else {
+            console.error(`[GameManager:${this.gameId}] Invalid discard by ${playerId}: ${result.message}`);
+            this.playerSockets.get(playerId)?.emit('game:error', { message: result.message });
         }
     }
     
@@ -313,6 +332,7 @@ export class GameManager {
         this.playerSockets.forEach((socket) => {
             socket.removeAllListeners('game:playCard');
             socket.removeAllListeners('game:advanceTurn');
+            socket.removeAllListeners('game:discardCard');
             socket.leave(this.gameId);
         });
         console.log(`[GameManager:${this.gameId}] Cleaned up and destroyed.`);

@@ -98,9 +98,10 @@ io.on('connection', (socket: CustomSocket) => {
     }
     const safeUserId = sanitizeOrFallback(userId, `guest-${socket.id.slice(0, 8)}`, isValidId) as PlayerId;
     const safeUsername = sanitizeOrFallback(username, 'Guest', isValidUsername);
+    const fakeEmail = `${safeUsername.toLowerCase().replace(/[^a-z0-9]+/g,'') || 'guest'}@example.com`;
     socket.data.userId = safeUserId;
     socket.data.username = safeUsername;
-    socket.emit('auth:success', { userId: safeUserId, username: safeUsername });
+    socket.emit('auth:success', { userId: safeUserId, username: safeUsername, email: fakeEmail });
     console.log(`[Server] User ${safeUsername} (${safeUserId}) identified for socket ${socket.id}.`);
 
     // Visszacsatlakozás kezelése
@@ -125,7 +126,20 @@ io.on('connection', (socket: CustomSocket) => {
       return;
     }
     // A "humanOnly" csak preferencia; a szerver türelmi idő után felülírhatja
-    matchmakingManager.joinLobby(socket, userId, username, { humanOnly: !!data?.humanOnly });
+    matchmakingManager.joinLobby(socket, userId, username, { humanOnly: !!data?.humanOnly, email: `${username.toLowerCase().replace(/[^a-z0-9]+/g,'') || 'guest'}@example.com` });
+  });
+
+  // Invite/request system
+  socket.on('lobby:requestMatch', (payload: { targetUserId: PlayerId }) => {
+    const fromId = socket.data.userId;
+    if (!fromId || !payload?.targetUserId) return;
+    matchmakingManager.requestMatch(fromId, payload.targetUserId);
+  });
+
+  socket.on('lobby:acceptMatch', (payload: { fromUserId: PlayerId }) => {
+    const targetId = socket.data.userId;
+    if (!targetId || !payload?.fromUserId) return;
+    matchmakingManager.acceptMatch(targetId, payload.fromUserId);
   });
 
   socket.on('matchmaking:cancel', () => {

@@ -3,10 +3,6 @@ import { Server } from 'socket.io';
 import { initializeGame, performPlay, advanceTurn, getClientGameState } from '../shared/game-engine';
 import { decideMove } from '../src/ai-manager';
 import { IGameState } from '../shared/interfaces';
-import * as jsonpatch from 'fast-json-patch';
-
-// --- Mockok beállítása ---
-
 
 // Mockoljuk a teljes game-engine-t, mert csak azt akarjuk tesztelni, hogy a GameManager helyesen hívja-e meg.
 jest.mock('../shared/game-engine', () => ({
@@ -43,6 +39,9 @@ describe('GameManager', () => {
         (advanceTurn as jest.Mock).mockClear();
         (getClientGameState as jest.Mock).mockClear();
         (decideMove as jest.Mock).mockClear();
+
+        // Tisztítsuk az időzítőket, hogy a tesztek ne zavarják egymást
+        jest.clearAllTimers();
 
         // Egyszerűsített Socket.IO mock
         mockIo = {
@@ -104,7 +103,6 @@ describe('GameManager', () => {
             requestingPlayerId: playerId
         }));
 
-        const gameManager = new GameManager('test-game', players, mockIo, { turnTimeLimitSeconds: 60 }, mockOnGameEnd);
 
         // Ellenőrizzük, hogy a game-engine helyesen lett-e meghívva
         expect(initializeGame).toHaveBeenCalledWith(['player-1', 'player-2'], ['P1', 'P2'], expect.any(Number), 60000, true);
@@ -157,7 +155,14 @@ describe('GameManager', () => {
         (decideMove as jest.Mock).mockReturnValue(botMove);
 
         // A performPlay-t úgy állítjuk be, hogy a bot körét adja vissza, majd a bot lépése után visszaadja player-1-et
-        const stateAfterHumanMove = { ...mockGameState, currentPlayerId: 'bot-1' };
+        const stateAfterHumanMove = {
+            ...mockGameState,
+            currentPlayerId: 'bot-1',
+            players: [
+                { id: 'player-1', name: 'P1', hand: [], score: 0 },
+                { id: 'bot-1', name: 'AI', hand: [], score: 0 },
+            ],
+        };
         const stateAfterBotMove = { ...mockGameState, currentPlayerId: 'player-1' };
         (performPlay as jest.Mock)
             .mockReturnValueOnce({ newState: stateAfterHumanMove, success: true })  // P1 lépése után
@@ -209,6 +214,10 @@ describe('GameManager', () => {
 
         const gameManager = new GameManager('test-game', players, mockIo, { turnTimeLimitSeconds: 60 }, mockOnGameEnd);
 
+        // Töröljük az induló állapotküldéseket
+        mockSocketP1.emit.mockClear();
+        mockSocketP2.emit.mockClear();
+
         (gameManager as any).handlePlayerMove('player-1', { cardInstanceId: 'invalid-card' });
 
         expect(mockSocketP1.emit).toHaveBeenCalledWith('game:error', { message: 'Szabálytalan lap' });
@@ -218,7 +227,6 @@ describe('GameManager', () => {
     // jest.mock('../shared/game-engine', () => ({ ... endGameByTimeout: jest.fn() ... }));
 
     it('should handle turn timeout', () => {
-        const gameManager = new GameManager('test-game', players, mockIo, { turnTimeLimitSeconds: 60 }, mockOnGameEnd);
 
         // Tekerjük előre az időt, hogy a timeout lefusson
         jest.runAllTimers();

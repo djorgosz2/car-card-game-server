@@ -14,6 +14,7 @@ import { PlayerId } from '../shared/interfaces';
 export interface PlayerInLobby {
   userId: PlayerId;
   username: string;
+  email?: string;
   socketId: string;
   joinedAt: number;
   isBot: boolean;
@@ -46,6 +47,7 @@ class MatchmakingManager extends EventEmitter {
   private playersInLobby = new Map<PlayerId, PlayerInLobby>();
   private aiSpawnTimer: ReturnType<typeof setTimeout> | null = null;
   private botCounter = 0;
+  private pendingRequests: Map<PlayerId, Set<PlayerId>> = new Map(); // toUserId -> Set<fromUserId>
 
   constructor(io: Server, config: MatchmakingConfig) {
     super();
@@ -61,7 +63,7 @@ class MatchmakingManager extends EventEmitter {
   /**
    * Egy játékos csatlakozik a várólistához.
    */
-  public joinLobby(socket: Socket, userId: PlayerId, username: string, options?: { humanOnly?: boolean }) {
+  public joinLobby(socket: Socket, userId: PlayerId, username: string, options?: { humanOnly?: boolean; email?: string }) {
     // A validációk (pl. már játékban van-e) a fő szerver fájl felelőssége lesz.
     if (this.playersInLobby.has(userId)) {
       socket.emit('matchmaking:error', { message: 'Már a lobbyban vagy!' });
@@ -71,6 +73,7 @@ class MatchmakingManager extends EventEmitter {
     const playerData: PlayerInLobby = {
       userId,
       username,
+      email: options?.email,
       socketId: socket.id,
       joinedAt: Date.now(),
       isBot: false,
@@ -81,7 +84,7 @@ class MatchmakingManager extends EventEmitter {
     this.log(`Player ${username} joined lobby. Total players: ${this.playersInLobby.size}`);
 
     socket.emit('matchmaking:joined', { message: 'Sikeresen csatlakoztál a lobbyba!' });
-    this.broadcastLobbyUpdate();
+    this.emitLobbyUpdateToAll();
     this.checkForMatch();
   }
 
@@ -100,7 +103,14 @@ class MatchmakingManager extends EventEmitter {
         clearTimeout(this.aiSpawnTimer);
         this.aiSpawnTimer = null;
     }
-    this.broadcastLobbyUpdate();
+    // Töröljük a függő kéréseket is
+    this.pendingRequests.delete(userId);
+    for (const [, fromSet] of this.pendingRequests) {
+      if (fromSet.has(userId)) {
+        fromSet.delete(userId);
+      }
+    }
+    this.emitLobbyUpdateToAll();
   }
   
   /**
@@ -150,7 +160,7 @@ class MatchmakingManager extends EventEmitter {
     this.playersInLobby.set(botId, botData);
     this.log(`AI Bot spawned: ${botData.username}`);
     
-    this.broadcastLobbyUpdate();
+    this.emitLobbyUpdateToAll();
     this.checkForMatch();
   }
 
@@ -187,7 +197,7 @@ class MatchmakingManager extends EventEmitter {
     // A kulcsfontosságú változás: eseményt bocsátunk ki ahelyett, hogy magunk kezelnénk a játékot.
     this.emit('match-found', { players: playersForMatch });
 
-    this.broadcastLobbyUpdate();
+    this.emitLobbyUpdateToAll();
 
     // Ha maradtak még játékosok a lobbyban, újra ellenőrizzük, hátha újabb meccs is indítható.
     if (this.playersInLobby.size >= this.config.maxPlayersPerMatch) {
@@ -196,14 +206,75 @@ class MatchmakingManager extends EventEmitter {
   }
   
   /**
-   * Kiküldi a lobby aktuális állapotát minden kliensnek.
+   * Kiküldi a lobby aktuális állapotát minden kliensnek, személyre szabott relációs flag-ekkel.
    */
-  private broadcastLobbyUpdate() {
+  private emitLobbyUpdateToAll() {
     const lobbyData = Array.from(this.playersInLobby.values());
-    this.io.emit('lobby:update', { 
-      players: lobbyData.map(p => ({ username: p.username, isBot: p.isBot })),
+    for (const viewer of lobbyData) {
+      const socket = this.io.sockets.sockets.get(viewer.socketId);
+      if (!socket) continue;
+      const players = lobbyData.map(p => {
+        const relation = this.getRelation(viewer.userId, p.userId);
+        return {
+          id: p.userId,
+          username: p.username,
+          email: p.email,
+          isBot: p.isBot,
+          canJoin: relation === 'incoming',
+          canRequest: relation === 'none',
+        };
+      });
+      socket.emit('lobby:update', {
+        players,
       playerCount: lobbyData.length,
     });
+    }
+  }
+
+  private getRelation(viewerId: PlayerId, otherId: PlayerId): 'self' | 'incoming' | 'outgoing' | 'none' {
+    if (viewerId === otherId) return 'self';
+    const incomingFromOther = this.pendingRequests.get(viewerId)?.has(otherId) || false; // other -> me
+    if (incomingFromOther) return 'incoming';
+    const myOutgoingToOther = this.pendingRequests.get(otherId)?.has(viewerId) || false; // me -> other stored under otherId
+    if (myOutgoingToOther) return 'outgoing';
+    return 'none';
+  }
+
+  /** Request/Accept matchmaking between two human players */
+  public requestMatch(fromUserId: PlayerId, toUserId: PlayerId) {
+    if (!this.playersInLobby.has(fromUserId) || !this.playersInLobby.has(toUserId)) {
+      return;
+    }
+    if (fromUserId === toUserId) return;
+    let fromSet = this.pendingRequests.get(toUserId);
+    if (!fromSet) {
+      fromSet = new Set<PlayerId>();
+      this.pendingRequests.set(toUserId, fromSet);
+    }
+    fromSet.add(fromUserId);
+    this.emitLobbyUpdateToAll();
+  }
+
+  public acceptMatch(targetUserId: PlayerId, fromUserId: PlayerId) {
+    const fromSet = this.pendingRequests.get(targetUserId);
+    if (!fromSet || !fromSet.has(fromUserId)) return;
+    // Clear the pending request
+    fromSet.delete(fromUserId);
+    if (fromSet.size === 0) this.pendingRequests.delete(targetUserId);
+
+    const a = this.playersInLobby.get(targetUserId);
+    const b = this.playersInLobby.get(fromUserId);
+    if (!a || !b) {
+      this.emitLobbyUpdateToAll();
+      return;
+    }
+    // Start direct match between a and b
+    const playersForMatch = [a, b];
+    playersForMatch.forEach(player => this.playersInLobby.delete(player.userId));
+    if (this.aiSpawnTimer) { clearTimeout(this.aiSpawnTimer); this.aiSpawnTimer = null; }
+    this.log('Direct match accepted! Emitting event for players:', playersForMatch.map(p => p.username));
+    this.emit('match-found', { players: playersForMatch });
+    this.emitLobbyUpdateToAll();
   }
 }
 
