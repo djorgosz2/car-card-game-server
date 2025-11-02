@@ -61,7 +61,9 @@ function firstCarCardInHand(state: GameStateClient, myId: PlayerId): CardInstanc
   return car || null;
 }
 
-async function run() {
+async function runSingleTest(useInvites: boolean, testName: string) {
+  console.log(`\n[SMOKE] ==== Starting test: ${testName} ====\n`);
+  
   const aId = `pvpA-${Math.random().toString(36).slice(2, 8)}`;
   const bId = `pvpB-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -103,8 +105,7 @@ async function run() {
     b.emit('matchmaking:join', { humanOnly: true });
   });
 
-  // Optional invite path (not guaranteed due to auto-match); toggle via env
-  const useInvites = process.env.TEST_INVITES === '1';
+  // Optional invite path (toggle via useInvites parameter)
   if (useInvites) {
     a.on('lobby:update', (data: any) => {
       const target = (data.players || []).find((p: any) => p.id === bId);
@@ -130,16 +131,16 @@ async function run() {
   const startDeadline = Date.now() + 15000;
   while (!(ready.aStarted && ready.bStarted)) {
     if (Date.now() > startDeadline) {
-      throw new Error('Timeout waiting for game:start for both clients');
+      throw new Error(`[${testName}] Timeout waiting for game:start for both clients`);
     }
     await delay(100);
   }
-  console.log('[SMOKE] Game started for both clients');
+  console.log(`[SMOKE:${testName}] Game started for both clients`);
 
   // Play one card each
   const playLoopDeadline = Date.now() + 30000;
   while (!(ready.aPlayed && ready.bPlayed)) {
-    if (Date.now() > playLoopDeadline) throw new Error('Timeout waiting to play both cards');
+    if (Date.now() > playLoopDeadline) throw new Error(`[${testName}] Timeout waiting to play both cards`);
 
     if (!ready.aPlayed && aState) {
       const currentA = aState as GameStateClient;
@@ -149,7 +150,7 @@ async function run() {
           if (car) {
             a.emit('game:playCard', { cardInstanceId: car.instanceId, payload: { selectedMetric: 'speed' } });
             ready.aPlayed = true;
-            console.log('[SMOKE] P1 played a card');
+            console.log(`[SMOKE:${testName}] P1 played a card`);
           }
         }
       }
@@ -163,7 +164,7 @@ async function run() {
           if (car) {
             b.emit('game:playCard', { cardInstanceId: car.instanceId, payload: { selectedMetric: 'speed' } });
             ready.bPlayed = true;
-            console.log('[SMOKE] P2 played a card');
+            console.log(`[SMOKE:${testName}] P2 played a card`);
           }
         }
       }
@@ -172,15 +173,30 @@ async function run() {
     await delay(100);
   }
 
-  console.log('[SMOKE] Success: both clients played one card. Exiting.');
+  console.log(`[SMOKE:${testName}] Success: both clients played one card.`);
   a.disconnect();
   b.disconnect();
-  process.exit(0);
 }
 
-run().catch((err) => {
-  console.error('[SMOKE] Failed:', err);
-  process.exit(1);
-});
+async function run() {
+  try {
+    // Run test without invites first
+    await runSingleTest(false, 'No Invites');
+    
+    // Wait a bit between tests
+    await delay(2000);
+    
+    // Run test with invites
+    await runSingleTest(true, 'With Invites');
+    
+    console.log('\n[SMOKE] All tests passed! Exiting.');
+    process.exit(0);
+  } catch (err) {
+    console.error('[SMOKE] Failed:', err);
+    process.exit(1);
+  }
+}
+
+run();
 
 

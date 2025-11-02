@@ -4,9 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run sync-shared && jest --updateSnapshot && npm run test:pvp-smoke",
-    "test:pvp-smoke": "npm run test:pvp-smoke:no-invites && npm run test:pvp-smoke:invites",
-    "test:pvp-smoke:no-invites": "TEST_INVITES=0 npx ts-node scripts/pvp-smoke.ts",
-    "test:pvp-smoke:invites": "TEST_INVITES=1 npx ts-node scripts/pvp-smoke.ts",
+    "test:pvp-smoke": "npx ts-node scripts/pvp-smoke.ts",
+    "test:game": "jest tests/game-manager.test.ts tests/game-engine.test.ts tests/index.test.ts ",
     "sync-shared": "node sync-game-engine.js",
     "sync-game-engine": "node sync-game-engine.js",
     "lint": "eslint .",

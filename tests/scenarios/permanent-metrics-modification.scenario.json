@@ -14,6 +14,7 @@
         "action": "playCard",
         "playerId": "player-2",
         "findCard": { "type": "car" },
+        "payload": { "selectedMetric": "hp" },
         "expectedState": {
           "currentPlayerPhase": "both_cards_on_board"
         }

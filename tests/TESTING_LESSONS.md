@@ -387,3 +387,77 @@ A fő tanulságok:
 
 ---
 
+## 🐛 Bug: Inconsistent State - Pending Modifier Without Action Card
+
+### What Happened?
+
+**Error**: `Inconsistent state: Pending modifier exists for player bot-22, but no action card is on the board.`
+
+A bot lépésnél hiba történt: a `pendingMetricModifiers` tartalmazott egy bejegyzést, de az `activeActionCardsOnBoard` már üres volt.
+
+### Root Cause
+
+A `resolveRound()` függvény törölte az `activeActionCardsOnBoard`-ot a kör végén, de **nem törölte** a `pendingMetricModifiers`-t:
+
+```typescript
+// ❌ BEFORE (Buggy)
+newState.activeActionCardsOnBoard = { [player1.id]: null, [player2.id]: null };
+// pendingMetricModifiers maradt!
+
+// ✅ AFTER (Fixed)
+newState.activeActionCardsOnBoard = { [player1.id]: null, [player2.id]: null };
+newState.pendingMetricModifiers = { [player1.id]: null, [player2.id]: null }; // ← Added
+```
+
+**Scenario**:
+1. Player 1 kijátszik akciókártyát → `pendingMetricModifiers[bot-22]` beállítva
+2. Kör lezárul → `resolveRound()` törli `activeActionCardsOnBoard`-ot
+3. Következő körben bot autós kártyát próbál játszani
+4. `performPlay()` ellenőrzi: van `pendingModifier`, de nincs `actionCardOnBoard` → **ERROR**
+
+### Why Did Tests Miss It?
+
+- **Production-only bug**: Csak multiplayer/bot környezetben jelentkezett
+- **State synchronization**: A bug a körök közötti állapot tisztításban volt
+- **Missing integration test**: Nincs teszt, ami több körön át követi az akciókártya hatásait
+
+### Fix
+
+A `resolveRound()` most törli a `pendingMetricModifiers`-t is, mert ha a kör lezárult, már nem lehet érvényesíteni azokat a módosítókat, amelyek ebben a körben lettek kijátszva.
+
+### Lesson
+
+**Always clean up related state together**: Ha törlünk egy állapotot (pl. `activeActionCardsOnBoard`), ellenőrizzük, hogy vannak-e kapcsolódó állapotok (`pendingMetricModifiers`), amelyeket szintén törölni kell a konzisztencia érdekében.
+
+---
+
+## Early Game End Check - Játék vége ellenőrzés túl korán fut le
+
+### Problem
+
+A `resolveRound()` után a `checkGameEndConditions()` túl korán futott le, még mielőtt az `advanceTurn()` lefutott volna. Ez miatt a `gameStatus` `win`-re változott, és az `advanceTurn()` azonnal visszatért anélkül, hogy változtatott volna a fázison (`both_cards_on_board` maradt `waiting_for_initial_play` helyett).
+
+### Root Cause
+
+A `checkGameEndConditions()` 1/b része ellenőrzi, hogy ha az asztal üres (`boardIsEmpty`) és valakinek nincs autós kártyája, akkor véget ér a játék. Ez azonban akkor is lefutott, amikor még `both_cards_on_board` fázisban voltunk, mielőtt az `advanceTurn()` előkészítette volna a következő kört.
+
+### Why Tests Missed It
+
+A teszt scenariókban (`permanent-metrics-modification.scenario.json`) P1 elvesztette a kört, így nem volt autós kártyája. A `resolveRound()` után a `checkGameEndConditions()` észlelte ezt, és `win`-re állította a `gameStatus`-t, ami megakadályozta az `advanceTurn()` fázisváltását.
+
+### Fix
+
+A `checkGameEndConditions()` 1/b részéhez hozzáadtunk egy feltételt: csak akkor ellenőrzi a játék végét, ha már NEM vagyunk `both_cards_on_board` fázisban:
+
+```typescript
+if (!winnerId && boardIsEmpty && newState.currentPlayerPhase !== 'both_cards_on_board') {
+    // ... játék vége ellenőrzés
+}
+```
+
+### Lesson
+
+**Don't check game end conditions in intermediate phases**: A játék vége ellenőrzést csak akkor végezzük el, amikor már előkészítettük a következő kört (`advanceTurn()` után), vagy amikor már nincs aktív kör (`both_cards_on_board` fázis). A köztes fázisokban (`both_cards_on_board`) még nem lehet pontosan eldönteni, hogy véget ért-e a játék, mert a következő kör előkészítése még nem történt meg.
+
+---
+

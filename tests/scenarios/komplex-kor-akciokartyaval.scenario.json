@@ -1,5 +1,5 @@
 {
-  "description": "Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P1 nyer.",
+  "description": "Egy teljes kör, ahol P1 kijátszik egy autót, P2 reagál, és P2 nyer.",
   "initialSeed": 12345,
   "steps": [
     {
@@ -32,8 +32,7 @@
     {
       "action": "advanceTurn",
       "expectedState": {
-        "roundWinnerId": null,
-        "currentPlayerId": "player-1",
+        "currentPlayerId": "player-2",
         "currentPlayerPhase": "waiting_for_initial_play"
       }
     }

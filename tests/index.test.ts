@@ -59,6 +59,7 @@ describe('Server Index - Mock Behavior', () => {
             maxPlayersPerMatch: 2,
             aiEnabled: true,
             aiDelayMs: 5000,
+            humanOnlyMaxWaitMs: 15000,
         };
 
         (MatchmakingManager as unknown as jest.Mock).mockImplementation(() => ({
@@ -134,6 +135,7 @@ describe('Server Index - Game Lifecycle Logic', () => {
             maxPlayersPerMatch: 2,
             aiEnabled: true,
             aiDelayMs: 5000,
+            humanOnlyMaxWaitMs: 15000,
         });
 
         // Simulate registering the event

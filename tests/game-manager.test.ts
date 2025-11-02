@@ -1,6 +1,6 @@
 import { GameManager } from '../src/game-manager';
 import { Server } from 'socket.io';
-import { initializeGame, performPlay, advanceTurn, getClientGameState } from '../shared/game-engine';
+import { initializeGame, performPlay, advanceTurn, getClientGameState, checkGameEndConditions, endGameByTimeout } from '../shared/game-engine';
 import { decideMove } from '../src/ai-manager';
 import { IGameState } from '../shared/interfaces';
 
@@ -11,6 +11,8 @@ jest.mock('../shared/game-engine', () => ({
     performPlay: jest.fn(),
     advanceTurn: jest.fn(),
     getClientGameState: jest.fn(),
+    checkGameEndConditions: jest.fn(),
+    endGameByTimeout: jest.fn(),
 }));
 
 // Mockoljuk az aiManager-t, hogy irányítani tudjuk a bot döntéseit.
@@ -39,6 +41,8 @@ describe('GameManager', () => {
         (advanceTurn as jest.Mock).mockClear();
         (getClientGameState as jest.Mock).mockClear();
         (decideMove as jest.Mock).mockClear();
+        (checkGameEndConditions as jest.Mock).mockClear();
+        (endGameByTimeout as jest.Mock).mockClear();
 
         // Tisztítsuk az időzítőket, hogy a tesztek ne zavarják egymást
         jest.clearAllTimers();
@@ -94,6 +98,13 @@ describe('GameManager', () => {
             ...state,
             requestingPlayerId: playerId
         }));
+        // checkGameEndConditions alapértelmezetten csak visszaadja az állapotot változtatás nélkül
+        (checkGameEndConditions as jest.Mock).mockImplementation((state) => state);
+        (endGameByTimeout as jest.Mock).mockImplementation((state, playerId) => ({
+            ...state,
+            gameStatus: 'win' as const,
+            winnerId: state.players.find((p: any) => p.id !== playerId)?.id || null
+        }));
     });
 
     it('should initialize correctly, join players to room, and broadcast initial state', () => {
@@ -103,6 +114,8 @@ describe('GameManager', () => {
             requestingPlayerId: playerId
         }));
 
+        // Létrehozzuk a GameManager-t, ami meghívja az initializeGame-t
+        const gameManager = new GameManager('test-game', players, mockIo, { turnTimeLimitSeconds: 60 }, mockOnGameEnd);
 
         // Ellenőrizzük, hogy a game-engine helyesen lett-e meghívva
         expect(initializeGame).toHaveBeenCalledWith(['player-1', 'player-2'], ['P1', 'P2'], expect.any(Number), 60000, true);
@@ -158,6 +171,7 @@ describe('GameManager', () => {
         const stateAfterHumanMove = {
             ...mockGameState,
             currentPlayerId: 'bot-1',
+            currentPlayerPhase: 'waiting_for_initial_play' as const,
             players: [
                 { id: 'player-1', name: 'P1', hand: [], score: 0 },
                 { id: 'bot-1', name: 'AI', hand: [], score: 0 },
@@ -227,7 +241,8 @@ describe('GameManager', () => {
     // jest.mock('../shared/game-engine', () => ({ ... endGameByTimeout: jest.fn() ... }));
 
     it('should handle turn timeout', () => {
-
+        const gameManager = new GameManager('test-game', players, mockIo, { turnTimeLimitSeconds: 60 }, mockOnGameEnd);
+        
         // Tekerjük előre az időt, hogy a timeout lefusson
         jest.runAllTimers();
 
@@ -315,7 +330,8 @@ describe('GameManager', () => {
                 { id: 'player-1', name: 'P1', hand: [], score: 0 },
                 { id: 'bot-1', name: 'AI', hand: [], score: 0 }
             ],
-            currentPlayerId: 'bot-1'
+            currentPlayerId: 'bot-1',
+            currentPlayerPhase: 'waiting_for_initial_play' as const
         };
         (performPlay as jest.Mock).mockReturnValue({ newState: stateWhereBotIsCurrentPlayer, success: true });
 

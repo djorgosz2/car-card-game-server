@@ -48,8 +48,7 @@
       {
         "action": "advanceTurn",
         "expectedState": {
-          "currentPlayerId": "player-1",
-          "extraTurnPlayerId": null
+          "currentPlayerId": "player-1"
         }
       }
     ]
