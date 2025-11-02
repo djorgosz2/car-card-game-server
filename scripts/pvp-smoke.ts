@@ -102,6 +102,23 @@ async function run() {
   b.on('auth:success', () => {
     b.emit('matchmaking:join', { humanOnly: true });
   });
+
+  // Optional invite path (not guaranteed due to auto-match); toggle via env
+  const useInvites = process.env.TEST_INVITES === '1';
+  if (useInvites) {
+    a.on('lobby:update', (data: any) => {
+      const target = (data.players || []).find((p: any) => p.id === bId);
+      if (target && target.canRequest) {
+        a.emit('lobby:requestMatch', { targetUserId: bId });
+      }
+    });
+    b.on('lobby:update', (data: any) => {
+      const source = (data.players || []).find((p: any) => p.id === aId);
+      if (source && source.canJoin) {
+        b.emit('lobby:acceptMatch', { fromUserId: aId });
+      }
+    });
+  }
   b.on('game:start', () => { ready.bStarted = true; });
   b.on('game:stateUpdate', (state: GameStateClient) => { bState = state; });
   b.on('game:patch', (patch: jsonpatch.Operation[]) => { applyB(patch); });
